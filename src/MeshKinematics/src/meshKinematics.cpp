@@ -5,36 +5,32 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <meshKinematics.h>
-
-#include <iostream>
-
 #include <Eigen/Core>
-#include <iDynTree/Core/EigenHelpers.h>
 #include <Eigen/Dense>
+#include <iDynTree/Core/EigenHelpers.h>
+#include <iostream>
 #include <iDynTree/Model/SolidShapes.h>
 #include <iDynTree/ModelIO/ModelLoader.h>
 #include <iDynTree/KinDynComputations.h>
-
-using namespace iDynTree;
+#include <meshKinematics.h>
 
 // Constructor
 MeshKinematics::MeshKinematics(const std::string& file_path){
 
-  ModelLoader mdlLoader;
-  Model model;
-  FrameIndex frameIndex;
-  ModelSolidShapes solidshape_obj;
-  std::vector<std::vector<SolidShape*>> solidshape_vector;
+  iDynTree::FrameIndex frameIndex;
+  iDynTree::ModelLoader mdlLoader;
+  iDynTree::Model model;
+  iDynTree::ModelSolidShapes solidshape_obj;
+  std::vector<std::vector<iDynTree::SolidShape*>> solidshape_vector;
   iDynTree::Transform visualH;
 
   // Load the modl in model loader object
-  if( !mdlLoader.loadModelFromFile(file_path) ) { throw(std::runtime_error("Impossible to load model from " + file_path)); }
+  if(!mdlLoader.loadModelFromFile(file_path)) { throw( std::runtime_error("Impossible to load model from " + file_path )); }
   model = mdlLoader.model();
   n_links_ = model.getNrOfLinks();
 
   // Define the KinDynComputations object to perform kinematic computation
-  if( !comp_model_.loadRobotModel(model) ) { throw(std::runtime_error("Impossible to create iKinDynComp object ")); }
+  if(!comp_model_.loadRobotModel(model)) { throw( std::runtime_error("Impossible to create iKinDynComp object " )); }
   dofs_ = comp_model_.getNrOfDegreesOfFreedom();
 
   // Create objects for shape
@@ -65,8 +61,8 @@ MeshKinematics::~MeshKinematics(){
 // Update method - it returns the transformations of all visual reference frames given the change in dof
 void MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenq){
 
-  FrameIndex frameIndex;
-  VectorDynSize idynq(dofs_);
+  iDynTree::FrameIndex frameIndex;
+  iDynTree::VectorDynSize idynq(dofs_);
   toEigen(idynq) = eigenq;
   comp_model_.setJointPos(idynq);
 
