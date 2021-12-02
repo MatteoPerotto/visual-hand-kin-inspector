@@ -71,6 +71,8 @@ cv::Mat MeshSuperimposer::meshSuperimpose(std::vector<double> currentPose, cv::M
     double camO [4] = {1.0, 0.0, 0.0, 0.0};
     sicadPtr_->superimpose(objposeMap_, camX, camO, currentFrame);
 
+    cv::cvtColor(currentFrame, currentFrame, cv::COLOR_BGR2RGB, 0);
+
     return currentFrame;
 }
 

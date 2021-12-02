@@ -108,6 +108,7 @@ cv::Mat PoseDetector::poseUpdate(cv::Mat& currentFrame)
     }
 
     std::cout << "\nCurrent translation:" << tvecs_[0] << std::endl;
+    cv::cvtColor(outFrame, outFrame, cv::COLOR_BGR2RGB, 0);
 
     return outFrame;
 }
