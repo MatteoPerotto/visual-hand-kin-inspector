@@ -1,1 +1,3 @@
-add_subdirectory(MeshKinematics)
+# add_subdirectory(MeshKinematics)
+#add_subdirectory(MeshSuperimp)
+add_subdirectory(PoseDetector)
