@@ -4,7 +4,8 @@
 #include<Eigen/Geometry>
 #include<opencv4/opencv2/core.hpp>
 #include<iostream>
-#include <librealsense2/rs.hpp> 
+#include<librealsense2/rs.hpp> 
+#include<opencv4/opencv2/aruco.hpp>
 
 class PoseDetector
 {
