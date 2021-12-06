@@ -34,9 +34,9 @@ int main(int argc, char** argv){
     intP.at<double>(2, 2) = 1;
 
     std::string path = "/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_wrist_hand_prt.stl";
-    
+   
     MeshSuperimposer mSup(path, extP, intP);
-    
+
     Superimpose::ModelPose obj_pose(7);
     obj_pose[0] = 0;
     obj_pose[1] = 0;
@@ -45,17 +45,17 @@ int main(int argc, char** argv){
     obj_pose[4] = 0;
     obj_pose[5] = 0;
     obj_pose[6] = 0;
-    
-        
+       
     std::shared_ptr<rs2::pipeline> p (new rs2::pipeline);
     p->start();
+    int j=0;
 
     for (;;)
     {
         rs2::frameset frames = p->wait_for_frames();
         rs2::video_frame color = frames.get_color_frame();
         cv::Mat imageIn(cv::Size(width, height), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
-        
+             
         // Superimpose 
         cv::Mat outImg = mSup.meshSuperimpose(obj_pose,imageIn);
 
@@ -63,9 +63,11 @@ int main(int argc, char** argv){
         cv::imshow("Webcam source", outImg);
         if (cv::waitKey(5) >= 0)
             break;
-    }
-    
-    return EXIT_SUCCESS ;
+        
+        j++;
+    }  
 
+    return EXIT_SUCCESS ;
+    
 }
 

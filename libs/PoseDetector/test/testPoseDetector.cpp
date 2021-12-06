@@ -23,6 +23,8 @@ int main(int argc, char** argv)
     std::shared_ptr<rs2::pipeline> p (new rs2::pipeline);
     posedet.getIntrinsic(p);
     
+    cv::VideoWriter video("outcpp.avi",cv::VideoWriter::fourcc('M','J','P','G'),10, cv::Size(640,480));
+
     for (;;)
     {    
         rs2::frameset frames = p->wait_for_frames();
@@ -32,10 +34,12 @@ int main(int argc, char** argv)
         cv::Mat markedImage = posedet.poseUpdate(imageIn);
 
         cv::imshow("Realsense", markedImage);
+        video.write(markedImage);
         if (cv::waitKey(5) >= 0)
             break;
     }
-    
-    return EXIT_SUCCESS ;
 
+    video.release();
+    return EXIT_SUCCESS ;
+    
 }
