@@ -10,7 +10,10 @@
 class PoseDetector
 {
     public:
-    PoseDetector( Eigen::Transform<double,3,Eigen::Affine> cameraExt);
+    PoseDetector( Eigen::Transform<double,3,Eigen::Affine> cameraExt, 
+                    Eigen::MatrixXd cameraInt = Eigen::MatrixXd::Zero(3,3), 
+                    Eigen::MatrixXd distCoeff = Eigen::MatrixXd::Zero(5,1)
+                );
     ~PoseDetector();
     void printMarker();
     cv::Mat poseUpdate(cv::Mat & currentFrame);
@@ -20,14 +23,12 @@ class PoseDetector
     cv::Ptr<cv::aruco::Dictionary> dictionary_;
     cv::Mat markerImage_;
 
-    cv::Mat cameraIntrinsic_; 
+    Eigen::MatrixXd cameraIntrinsic_; 
     Eigen::Transform<double,3,Eigen::Affine> cameraEstrinsic_;
-    cv::Mat distCoeff_;
-    size_t imgW_;
-    size_t imgH_;
-
+    Eigen::MatrixXd distCoeff_;
     std::vector<int> foundMarkerIds_;
-    std::vector<cv::Vec3d> rvecs_, tvecs_;
+
+    std::vector<Eigen::Transform<double,3,Eigen::Affine>> arucoTransform_;
 
     private:
 };
