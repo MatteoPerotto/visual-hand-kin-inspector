@@ -39,13 +39,14 @@ int main(int argc, char** argv)
         rs2::video_frame color = frames.get_color_frame();
         
         cv::Mat imageIn(cv::Size(640, 480), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
-        cv::Mat markedImage = posedet.poseUpdate(imageIn); 
 
-        cv::imshow("Realsense", markedImage);
+        auto newPose = posedet.poseUpdate(imageIn); 
+
+        cv::imshow("Realsense", newPose.first);
         if (cv::waitKey(5) >= 0)
             break;
 
-        std::cout << "\n" << posedet.arucoTransform_[0].matrix() << std::endl;
+        std::cout << "\n" << newPose.second.matrix() << std::endl;
     }
 
     return EXIT_SUCCESS ;

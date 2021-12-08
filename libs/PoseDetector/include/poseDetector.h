@@ -16,7 +16,7 @@ class PoseDetector
                 );
     ~PoseDetector();
     void printMarker();
-    cv::Mat poseUpdate(cv::Mat & currentFrame);
+    std::pair<cv::Mat,Eigen::Transform<double,3,Eigen::Affine>> poseUpdate(cv::Mat & currentFrame);
     void fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]);
     void getIntrinsic(std::shared_ptr<rs2::pipeline> p);
 
@@ -27,8 +27,6 @@ class PoseDetector
     Eigen::Transform<double,3,Eigen::Affine> cameraEstrinsic_;
     Eigen::MatrixXd distCoeff_;
     std::vector<int> foundMarkerIds_;
-
-    std::vector<Eigen::Transform<double,3,Eigen::Affine>> arucoTransform_;
 
     private:
     bool areIntrisicInit_  = false;

@@ -96,15 +96,14 @@ void PoseDetector::getIntrinsic(std::shared_ptr<rs2::pipeline> p)
 
 }
 
-cv::Mat PoseDetector::poseUpdate(cv::Mat& currentFrame)
+std::pair<cv::Mat,Eigen::Transform<double,3,Eigen::Affine>> PoseDetector::poseUpdate(cv::Mat& currentFrame)
 {
     // [CADD MARKER DIM INSTEAD OF 0.02]
+    std::pair<cv::Mat,Eigen::Transform<double,3,Eigen::Affine>> newPose;
 
     if(areIntrisicInit_==false && areCoeffInit_==false){
         throw(std::runtime_error("[ERROR] Intrinsic parameters and distortion coefficients must be initialized. Can use the .fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]) method"));
     }
-    cv::Mat outFrame;
-    currentFrame.copyTo(outFrame);
 
     cv::Mat cvIntrinsic;
     cv::Mat cvDistCoeff;
@@ -131,24 +130,23 @@ cv::Mat PoseDetector::poseUpdate(cv::Mat& currentFrame)
         cv::cv2eigen(tvecs[i],traslEigen); 
         
         homT = Eigen::Translation<double,3>(traslEigen);
-        homT.rotate(rotEigen);
-
-        arucoTransform_.push_back(homT);
-            
+        homT.rotate(rotEigen);       
     }
-    arucoTransform_.clear();
      	
     // Draw and output 
-    cv::aruco::drawDetectedMarkers(outFrame, markerCorners, foundMarkerIds_);
+    cv::aruco::drawDetectedMarkers(currentFrame, markerCorners, foundMarkerIds_);
     for (int i = 0; i < rvecs.size(); ++i) 
     {
         auto rvec = rvecs[i];
         auto tvec = tvecs[i];
-        cv::aruco::drawAxis(outFrame, cvIntrinsic, cvDistCoeff, rvec, tvec, 0.1);
+        cv::aruco::drawAxis(currentFrame, cvIntrinsic, cvDistCoeff, rvec, tvec, 0.1);
     }
-    cv::cvtColor(outFrame, outFrame, cv::COLOR_BGR2RGB, 0);
+    cv::cvtColor(currentFrame, currentFrame, cv::COLOR_BGR2RGB, 0);
 
-    return outFrame;
+    newPose.first = currentFrame;
+    newPose.second  = homT;
+
+    return newPose;
 }
 
 
