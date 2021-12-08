@@ -17,7 +17,12 @@ int main(int argc, char* argv[])
   for(int i=0; i<20; i++)
   {
     std::cout << "########### ITERATION ########### " << i+1 << std::endl;
-    mkObject.updateConfiguration(q);
+    std::vector<Eigen::Transform<double, 3, Eigen::Affine>> meshTransform;
+    meshTransform = mkObject.updateConfiguration(q);
+    std::cout << meshTransform.size() << std::endl;
+    for(int i=0; i<mkObject.nLinks_; i++){
+      std::cout << meshTransform[i].matrix() << std::endl;
+    }
     q[0] = q[0]+0.001;
     q[1] = q[1]+0.02;
     q[2] = q[2]-0.1;

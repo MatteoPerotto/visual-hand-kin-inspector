@@ -16,19 +16,17 @@
 class MeshKinematics
 {
 public:
-  MeshKinematics(const std::string& file_path);
+  MeshKinematics(const std::string& filePath);
   ~MeshKinematics();
-  void updateConfiguration(const Eigen::VectorXd& eigenq);
-
+  std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updateConfiguration(const Eigen::VectorXd& eigenCoord);
   std::size_t dofs_;
-  std::size_t n_links_;
-  std::vector<Eigen::Transform<double, 3, Eigen::Affine>> current_visual_transform_;
-  std::vector<std::pair<std::string,std::string>> urdf_path_;
+  std::size_t nLinks_;
+  std::vector<std::pair<std::string,std::string>> meshPath_;
 private:
   std::vector<std::string> frames_;
-  std::vector<iDynTree::Transform> visual_transform_;
-  iDynTree::KinDynComputations comp_model_;
+  std::vector<iDynTree::Transform> visualTransform_;
+  iDynTree::KinDynComputations compModel_;
 };
 
 
-#endif
+#endif //KIN_FROM_DESC

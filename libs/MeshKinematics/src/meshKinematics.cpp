@@ -15,39 +15,39 @@
 #include <meshKinematics.h>
 
 // Constructor
-MeshKinematics::MeshKinematics(const std::string& file_path){
+MeshKinematics::MeshKinematics(const std::string& filePath){
 
   iDynTree::FrameIndex frameIndex;
   iDynTree::ModelLoader mdlLoader;
   iDynTree::Model model;
-  iDynTree::ModelSolidShapes solidshape_obj;
-  std::vector<std::vector<iDynTree::SolidShape*>> solidshape_vector;
+  iDynTree::ModelSolidShapes solidshapeObj;
+  std::vector<std::vector<iDynTree::SolidShape*>> solidshapeVector;
   iDynTree::Transform visualH;
 
   // Load the modl in model loader object
-  if(!mdlLoader.loadModelFromFile(file_path)) { throw( std::runtime_error("Impossible to load model from " + file_path )); }
+  if(!mdlLoader.loadModelFromFile(filePath)) { throw( std::runtime_error("Impossible to load model from " + filePath )); }
   model = mdlLoader.model();
-  n_links_ = model.getNrOfLinks();
+  nLinks_ = model.getNrOfLinks();
 
   // Define the KinDynComputations object to perform kinematic computation
-  if(!comp_model_.loadRobotModel(model)) { throw( std::runtime_error("Impossible to create iKinDynComp object " )); }
-  dofs_ = comp_model_.getNrOfDegreesOfFreedom();
+  if(!compModel_.loadRobotModel(model)) { throw( std::runtime_error("Impossible to create iKinDynComp object " )); }
+  dofs_ = compModel_.getNrOfDegreesOfFreedom();
 
   // Create objects for shape
-  solidshape_obj = model.visualSolidShapes();
-  solidshape_vector = solidshape_obj.getLinkSolidShapes();
+  solidshapeObj = model.visualSolidShapes();
+  solidshapeVector = solidshapeObj.getLinkSolidShapes();
 
-  for(frameIndex=0; frameIndex<n_links_; frameIndex++){
+  for(frameIndex=0; frameIndex<nLinks_; frameIndex++){
 
     // Push the frame name in a private vector container
-    std::string current_target_frame = model.getFrameName(frameIndex);
-    frames_.push_back(current_target_frame);
+    std::string currentTargetFrame = model.getFrameName(frameIndex);
+    frames_.push_back(currentTargetFrame);
 
     // Save the fixed transformations between link and geometry refrence frames
-    visual_transform_.push_back(solidshape_vector[frameIndex][0]->getLink_H_geometry());
+    visualTransform_.push_back(solidshapeVector[frameIndex][0]->getLink_H_geometry());
 
-    // Insert the frame name and path inside the urdf_path_ class container
-    urdf_path_.push_back(make_pair(current_target_frame, solidshape_vector[frameIndex][0]->asExternalMesh()->getFileLocationOnLocalFileSystem()));
+    // Insert the frame name and path inside the urdfPath_ class container
+    meshPath_.push_back(make_pair(currentTargetFrame, solidshapeVector[frameIndex][0]->asExternalMesh()->getFileLocationOnLocalFileSystem()));
 
   }
 
@@ -55,27 +55,24 @@ MeshKinematics::MeshKinematics(const std::string& file_path){
 
 // Destructor
 MeshKinematics::~MeshKinematics(){
-
 }
 
 // Update method - it returns the transformations of all visual reference frames given the change in dof
-void MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenq){
+std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenCoord){
 
+  std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updatedPose;
   iDynTree::FrameIndex frameIndex;
   iDynTree::VectorDynSize idynq(dofs_);
-  toEigen(idynq) = eigenq;
-  comp_model_.setJointPos(idynq);
+  toEigen(idynq) = eigenCoord;
+  compModel_.setJointPos(idynq);
 
-  for(frameIndex=0; frameIndex<n_links_; frameIndex++){
+  for(frameIndex=0; frameIndex<nLinks_; frameIndex++){
 
-    iDynTree::Transform idyntree_current_visual_transform = comp_model_.getWorldTransform(frames_[frameIndex])*visual_transform_[frameIndex];
-    Eigen::Transform<double, 3, Eigen::Affine> eigen_transform;
-    eigen_transform.matrix() = toEigen(idyntree_current_visual_transform.asHomogeneousTransform());
-    current_visual_transform_.push_back(eigen_transform);
-
-    std::cout << "\nFrame: " << frames_[frameIndex] << std::endl;
-    std::cout << eigen_transform.matrix() << std::endl;
+    iDynTree::Transform idyntreeCurrentVisualTransform = compModel_.getWorldTransform(frames_[frameIndex])*visualTransform_[frameIndex];
+    Eigen::Transform<double, 3, Eigen::Affine> eigenTransform;
+    eigenTransform.matrix() = toEigen(idyntreeCurrentVisualTransform.asHomogeneousTransform());
+    updatedPose.push_back(eigenTransform);
 
   }
-
+  return updatedPose;
 }
