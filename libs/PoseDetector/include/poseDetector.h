@@ -31,6 +31,8 @@ class PoseDetector
     std::vector<Eigen::Transform<double,3,Eigen::Affine>> arucoTransform_;
 
     private:
+    bool areIntrisicInit_  = false;
+    bool areCoeffInit_ = false;
 };
 
 #endif //POSE_DETECTOR

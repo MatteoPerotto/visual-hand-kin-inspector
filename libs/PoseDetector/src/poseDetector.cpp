@@ -22,11 +22,13 @@ PoseDetector::PoseDetector( Eigen::Transform<double,3,Eigen::Affine> cameraExt, 
     if(cameraInt.size()!=0)
     {
         cameraIntrinsic_ = cameraInt;
+        areIntrisicInit_ = true;
     }
     
     if(distCoeff.size()!=0)
     {
         distCoeff_ = distCoeff;
+        areCoeffInit_ = true;
     }
 
     // Create the marker 
@@ -97,6 +99,10 @@ void PoseDetector::getIntrinsic(std::shared_ptr<rs2::pipeline> p)
 cv::Mat PoseDetector::poseUpdate(cv::Mat& currentFrame)
 {
     // [CADD MARKER DIM INSTEAD OF 0.02]
+
+    if(areIntrisicInit_==false && areCoeffInit_==false){
+        throw(std::runtime_error("[ERROR] Intrinsic parameters and distortion coefficients must be initialized. Can use the .fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]) method"));
+    }
     cv::Mat outFrame;
     currentFrame.copyTo(outFrame);
 
