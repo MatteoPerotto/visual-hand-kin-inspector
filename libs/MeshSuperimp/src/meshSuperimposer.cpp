@@ -14,24 +14,27 @@
 
 
 // Constructor 
-MeshSuperimposer::MeshSuperimposer(std::string& path, Eigen::Transform<double,3,Eigen::Affine>& cameraExt, cv::Mat& cameraInt)
+MeshSuperimposer::MeshSuperimposer(std::vector<std::pair<std::string,std::string>>& paths, Eigen::Transform<double,3,Eigen::Affine>& cameraExt, Eigen::Matrix3d cameraInt, int imgW, int imgH)
 {
-    // Save the mesh path 
-    const char * cpath = path.std::string::c_str();
-    if(access(cpath, F_OK ) != 0){
-        std::cout << "ERROR: Cannot find the mesh file" << std::endl;
-    }else{
-        meshesPath_.emplace("wrist",cpath);
+    // Save the mesh path
+    meshN_ = paths.size();
+    for(int meshIndex=0; meshIndex<meshN_; meshIndex++){
+
+        const char * cpath = paths[meshIndex].second.std::string::c_str();
+        if(access(cpath, F_OK ) != 0){
+            std::cout << "ERROR: Cannot find the mesh file" << std::endl;
+        }else{
+            meshesContainer_.emplace(paths[meshIndex].first,cpath);
+            idContainer_.push_back(paths[meshIndex].first);
+            std::cout << idContainer_[meshIndex] << std::endl;
+        }
     }
-
+    
     // Initialie SICAD object
-    int width = 640;
-    int height = 480;
-
     sicadPtr_ = std::unique_ptr<SICAD> 
     (
-        new SICAD(meshesPath_, 640, 480, cameraInt.at<double>(0, 0), cameraInt.at<double>(1, 1), 
-            cameraInt.at<double>(0, 2), cameraInt.at<double>(1, 2))
+        new SICAD(meshesContainer_, imgW, imgH, cameraInt(0, 0), cameraInt(1, 1), 
+            cameraInt(0, 2), cameraInt(1, 2))
     );
 
     sicadPtr_->setBackgroundOpt(true);
@@ -64,14 +67,27 @@ std::vector<double> MeshSuperimposer::eigTransformToPose(Eigen::Transform<double
     return pose;
 }
 
-cv::Mat MeshSuperimposer::meshSuperimpose(std::vector<double> currentPose, cv::Mat currentFrame)
+cv::Mat MeshSuperimposer::meshSuperimpose(std::vector<Eigen::Transform<double,3,Eigen::Affine>>& eigTransforms, cv::Mat currentFrame)
 {   
-    objposeMap_.emplace("wrist", currentPose);
+    std::vector<double> currentPose(7);
+
+    for(int meshIndex=0; meshIndex<meshN_; meshIndex++){
+        
+        currentPose[0] = eigTransforms[meshIndex].translation()(0);
+        currentPose[1] = eigTransforms[meshIndex].translation()(1);
+        currentPose[2] = eigTransforms[meshIndex].translation()(2);
+
+        Eigen::AngleAxisd angleAxis(eigTransforms[meshIndex].rotation());
+        currentPose[3] = angleAxis.axis()(0);
+        currentPose[4] = angleAxis.axis()(1);
+        currentPose[5] = angleAxis.axis()(2);
+        currentPose[6] = angleAxis.angle();
+        objposeMap_.emplace(idContainer_[meshIndex], currentPose);
+    }
+    
     double camX [3] = {0.0, 0.0, 0.0};
     double camO [4] = {1.0, 0.0, 0.0, 0.0};
     sicadPtr_->superimpose(objposeMap_, camX, camO, currentFrame);
-
-    cv::cvtColor(currentFrame, currentFrame, cv::COLOR_BGR2RGB, 0);
 
     return currentFrame;
 }

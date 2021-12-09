@@ -14,38 +14,45 @@
 int main(int argc, char** argv){
 
     Eigen::Transform<double,3,Eigen::Affine> extP = Eigen::Transform<double,3,Eigen::Affine>::Identity();
+    Eigen::Matrix3d intP;
 
     int width = 640;
     int height = 480;
-    float ppx = 323.418;
-    float ppy = 248.989;
-    float fx = 615.359;
-    float fy = 615.599;
+    const float fx = 615.3594360351562;
+    const float fy = 615.5988159179688;
+    const float ppx = 323.4178161621094;
+    const float ppy = 248.9889831542969;
+    const float coeff[5] = {0,0,0,0,0};
 
-    cv::Mat intP = cv::Mat::eye(3, 3, CV_64F);
-    intP.at<double>(0, 0) = fx;
-    intP.at<double>(0, 1) = 0;
-    intP.at<double>(0, 2) = ppx;
-    intP.at<double>(1, 0) = 0;
-    intP.at<double>(1, 1) = fy;
-    intP.at<double>(1, 2) = ppy; 
-    intP.at<double>(2, 2) = 0;
-    intP.at<double>(2, 2) = 0;
-    intP.at<double>(2, 2) = 1;
+    intP(0, 0) = fx;
+    intP(0, 1) = 0;
+    intP(0, 2) = ppx;
+    intP(1, 0) = 0;
+    intP(1, 1) = fy;
+    intP(1, 2) = ppy;
+    intP(2, 0) = 0;
+    intP(2, 1) = 0;
+    intP(2, 2) = 1;
+    
+    std::vector<std::pair<std::string,std::string>> paths;
+    paths.push_back(std::make_pair("wrist","/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_wrist_hand_prt.stl"));
+    paths.push_back(std::make_pair("palm","/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_hand_palm_naked_prt.stl"));
 
-    std::string path = "/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_wrist_hand_prt.stl";
-   
-    MeshSuperimposer mSup(path, extP, intP);
+    MeshSuperimposer mSup(paths, extP, intP, 640, 480);
 
-    Superimpose::ModelPose obj_pose(7);
-    obj_pose[0] = 0;
-    obj_pose[1] = 0;
-    obj_pose[2] = -500; // mt
-    obj_pose[3] = 1;
-    obj_pose[4] = 0;
-    obj_pose[5] = 0;
-    obj_pose[6] = 0;
-       
+    Eigen::Transform<double,3,Eigen::Affine> mytransform1;
+    mytransform1 = Eigen::Transform<double,3,Eigen::Affine>::Identity();
+    mytransform1 = mytransform1*Eigen::Translation<double,3>(0,0,-500);
+
+    Eigen::Transform<double,3,Eigen::Affine> mytransform2;
+    mytransform2 = Eigen::Transform<double,3,Eigen::Affine>::Identity();
+    mytransform2 = mytransform2*Eigen::Translation<double,3>(50,75,-500);
+
+    std::vector<Eigen::Transform<double,3,Eigen::Affine>> vectTransform;
+    vectTransform.push_back(mytransform1);
+    vectTransform.push_back(mytransform2);
+
+
     std::shared_ptr<rs2::pipeline> p (new rs2::pipeline);
     p->start();
     int j=0;
@@ -55,9 +62,10 @@ int main(int argc, char** argv){
         rs2::frameset frames = p->wait_for_frames();
         rs2::video_frame color = frames.get_color_frame();
         cv::Mat imageIn(cv::Size(width, height), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
-             
+        cv::cvtColor(imageIn, imageIn, cv::COLOR_BGR2RGB, 0); 
+
         // Superimpose 
-        cv::Mat outImg = mSup.meshSuperimpose(obj_pose,imageIn);
+        cv::Mat outImg = mSup.meshSuperimpose(vectTransform,imageIn);
 
         // Output the superimposed 
         cv::imshow("Webcam source", outImg);
