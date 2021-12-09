@@ -14,18 +14,21 @@ int main(int argc, char* argv[])
   q[1] = 0;
   q[2] = 0;
 
-  for(int i=0; i<20; i++)
+  for(int i=0; i<2; i++)
   {
-    std::cout << "########### ITERATION ########### " << i+1 << std::endl;
+    std::cout << "########### ITERATION " << i+1 << " ###########" << std::endl;
     std::vector<Eigen::Transform<double, 3, Eigen::Affine>> meshTransform;
     meshTransform = mkObject.updateConfiguration(q);
     std::cout << meshTransform.size() << std::endl;
     for(int i=0; i<mkObject.nLinks_; i++){
       std::cout << meshTransform[i].matrix() << std::endl;
+      std::cout << "\n" << std::endl;
     }
-    q[0] = q[0]+0.001;
-    q[1] = q[1]+0.02;
-    q[2] = q[2]-0.1;
+
+    //q0 is x, 
+    q[0] = q[0];
+    q[1] = q[1];
+    q[2] = q[2]+3.14;
   }
   
 }

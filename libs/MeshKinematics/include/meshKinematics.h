@@ -8,25 +8,25 @@
 #ifndef KIN_FROM_DESC
 #define KIN_FROM_DESC
 
-#include <iostream>
-#include <iDynTree/KinDynComputations.h>
-#include <Eigen/Core>
-#include <Eigen/Dense>
+#include<Eigen/Core>
+#include<Eigen/Dense>
+#include<iDynTree/KinDynComputations.h>
+#include<iostream>
 
 class MeshKinematics
 {
-public:
-  MeshKinematics(const std::string& filePath);
-  ~MeshKinematics();
-  std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updateConfiguration(const Eigen::VectorXd& eigenCoord);
-  std::size_t dofs_;
-  std::size_t nLinks_;
-  std::vector<std::pair<std::string,std::string>> meshPath_;
-private:
-  std::vector<std::string> frames_;
-  std::vector<iDynTree::Transform> visualTransform_;
-  iDynTree::KinDynComputations compModel_;
-};
+  public:
+    MeshKinematics(const std::string& filePath);
+    ~MeshKinematics();
+    std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updateConfiguration(const Eigen::VectorXd& eigenCoord);
+    std::size_t dofs_;
+    std::size_t nLinks_;
+    std::vector<std::pair<std::string,std::string>> meshPath_;
+  private:
+    std::vector<std::string> frames_;
+    std::vector<iDynTree::Transform> visualTransform_;
+    iDynTree::KinDynComputations compModel_;
 
+};
 
 #endif //KIN_FROM_DESC

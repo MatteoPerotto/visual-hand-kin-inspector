@@ -5,17 +5,19 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <Eigen/Core>
-#include <Eigen/Dense>
-#include <iDynTree/Core/EigenHelpers.h>
-#include <iostream>
-#include <iDynTree/Model/SolidShapes.h>
-#include <iDynTree/ModelIO/ModelLoader.h>
-#include <iDynTree/KinDynComputations.h>
-#include <meshKinematics.h>
+#include<Eigen/Core>
+#include<Eigen/Dense>
+#include<iDynTree/Core/EigenHelpers.h>
+#include<iDynTree/Model/SolidShapes.h>
+#include<iDynTree/ModelIO/ModelLoader.h>
+#include<iDynTree/KinDynComputations.h>
+#include<iostream>
+#include<meshKinematics.h>
+
 
 // Constructor
-MeshKinematics::MeshKinematics(const std::string& filePath){
+MeshKinematics::MeshKinematics(const std::string& filePath)
+{
 
   iDynTree::FrameIndex frameIndex;
   iDynTree::ModelLoader mdlLoader;
@@ -54,11 +56,14 @@ MeshKinematics::MeshKinematics(const std::string& filePath){
 }
 
 // Destructor
-MeshKinematics::~MeshKinematics(){
+MeshKinematics::~MeshKinematics()
+{
+
 }
 
 // Update method - it returns the transformations of all visual reference frames given the change in dof
-std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenCoord){
+std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenCoord)
+{
 
   std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updatedPose;
   iDynTree::FrameIndex frameIndex;
@@ -74,5 +79,7 @@ std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateCo
     updatedPose.push_back(eigenTransform);
 
   }
+
   return updatedPose;
+
 }
