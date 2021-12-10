@@ -42,11 +42,11 @@ int main(int argc, char** argv){
 
     Eigen::Transform<double,3,Eigen::Affine> mytransform1;
     mytransform1 = Eigen::Transform<double,3,Eigen::Affine>::Identity();
-    mytransform1 = mytransform1*Eigen::Translation<double,3>(0,0,-500);
+    mytransform1 *= Eigen::Translation<double,3>(0,0,500);
 
     Eigen::Transform<double,3,Eigen::Affine> mytransform2;
     mytransform2 = Eigen::Transform<double,3,Eigen::Affine>::Identity();
-    mytransform2 = mytransform2*Eigen::Translation<double,3>(50,75,-500);
+    mytransform2 *= Eigen::Translation<double,3>(50,75,500);
 
     std::vector<Eigen::Transform<double,3,Eigen::Affine>> vectTransform;
     vectTransform.push_back(mytransform1);

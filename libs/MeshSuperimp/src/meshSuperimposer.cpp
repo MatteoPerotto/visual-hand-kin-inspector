@@ -1,16 +1,16 @@
-#include <Eigen/Geometry>
-#include <iostream>
-#include <meshSuperimposer.h>
-#include <opencv4/opencv2/core.hpp>
-#include <opencv4/opencv2/aruco.hpp>
-#include <opencv4/opencv2/imgcodecs.hpp>
-#include <opencv4/opencv2/imgproc/imgproc.hpp>
-#include <opencv4/opencv2/videoio.hpp>
-#include <opencv4/opencv2/highgui.hpp>
-#include <stdio.h>
-
-#include <SuperimposeMesh/SICAD.h>
-#include <unistd.h>
+#include<Eigen/Geometry>
+#include<iostream>
+#include<meshSuperimposer.h>
+#include<opencv4/opencv2/core.hpp>
+#include<opencv4/opencv2/aruco.hpp>
+#include<opencv4/opencv2/imgcodecs.hpp>
+#include<opencv4/opencv2/imgproc/imgproc.hpp>
+#include<opencv4/opencv2/videoio.hpp>
+#include<opencv4/opencv2/highgui.hpp>
+#include<stdio.h>
+#include<cmath>
+#include<SuperimposeMesh/SICAD.h>
+#include<unistd.h>
 
 
 // Constructor 
@@ -27,7 +27,7 @@ MeshSuperimposer::MeshSuperimposer(std::vector<std::pair<std::string,std::string
             meshesContainer_.emplace(paths[meshIndex].first,cpath);
             idContainer_.push_back(paths[meshIndex].first);
             std::cout << idContainer_[meshIndex] << std::endl;
-        }
+        } 
     }
     
     // Initialie SICAD object
@@ -38,7 +38,7 @@ MeshSuperimposer::MeshSuperimposer(std::vector<std::pair<std::string,std::string
     );
 
     sicadPtr_->setBackgroundOpt(true);
-    
+        
     // Initialize intrinsic and extrinsic parameters 
     cameraIntrinsic_ = cameraInt;
     cameraEstrinsic_ = cameraExt;
@@ -69,25 +69,27 @@ std::vector<double> MeshSuperimposer::eigTransformToPose(Eigen::Transform<double
 
 cv::Mat MeshSuperimposer::meshSuperimpose(std::vector<Eigen::Transform<double,3,Eigen::Affine>>& eigTransforms, cv::Mat currentFrame)
 {   
+   
     std::vector<double> currentPose(7);
+    Superimpose::ModelPoseContainer objposeMap;
 
     for(int meshIndex=0; meshIndex<meshN_; meshIndex++){
-        
+
         currentPose[0] = eigTransforms[meshIndex].translation()(0);
         currentPose[1] = eigTransforms[meshIndex].translation()(1);
         currentPose[2] = eigTransforms[meshIndex].translation()(2);
-
+        
         Eigen::AngleAxisd angleAxis(eigTransforms[meshIndex].rotation());
-        currentPose[3] = angleAxis.axis()(0);
+        currentPose[3] = angleAxis.axis()(0); 
         currentPose[4] = angleAxis.axis()(1);
         currentPose[5] = angleAxis.axis()(2);
         currentPose[6] = angleAxis.angle();
-        objposeMap_.emplace(idContainer_[meshIndex], currentPose);
+        objposeMap.emplace(idContainer_[meshIndex], currentPose);
     }
     
     double camX [3] = {0.0, 0.0, 0.0};
-    double camO [4] = {1.0, 0.0, 0.0, 0.0};
-    sicadPtr_->superimpose(objposeMap_, camX, camO, currentFrame);
+    double camO [4] = {1.0, 0.0, 0.0, static_cast<float>(M_PI)};
+    sicadPtr_->superimpose(objposeMap, camX, camO, currentFrame);
 
     return currentFrame;
 }

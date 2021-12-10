@@ -23,7 +23,6 @@ private:
     Eigen::MatrixXd cameraIntrinsic_;
     Eigen::Transform<double,3,Eigen::Affine> cameraEstrinsic_;
     std::unique_ptr<SICAD> sicadPtr_;
-    Superimpose::ModelPoseContainer objposeMap_;
 };
 
 
