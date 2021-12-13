@@ -72,6 +72,7 @@ cv::Mat MeshSuperimposer::meshSuperimpose(std::vector<Eigen::Transform<double,3,
    
     std::vector<double> currentPose(7);
     Superimpose::ModelPoseContainer objposeMap;
+    cv::Mat bkgrndImage(640, 480, CV_8UC3, cv::Scalar(0, 0, 0));
 
     for(int meshIndex=0; meshIndex<meshN_; meshIndex++){
 
@@ -89,7 +90,15 @@ cv::Mat MeshSuperimposer::meshSuperimpose(std::vector<Eigen::Transform<double,3,
     
     double camX [3] = {0.0, 0.0, 0.0};
     double camO [4] = {1.0, 0.0, 0.0, static_cast<float>(M_PI)};
-    sicadPtr_->superimpose(objposeMap, camX, camO, currentFrame);
+    sicadPtr_->superimpose(objposeMap, camX, camO, bkgrndImage);
+
+    cv::cvtColor( bkgrndImage , bkgrndImage , cv::COLOR_BGR2GRAY);
+    std::vector<std::vector<cv::Point>> contours;
+    std::vector<cv::Vec4i> hierarchy;
+    findContours(bkgrndImage, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE );
+
+    cv::Scalar color = cv::Scalar(255, 0, 0);
+    cv::drawContours( currentFrame, contours, 0, color, 2, cv::LINE_8, hierarchy, 0 );
 
     return currentFrame;
 }
