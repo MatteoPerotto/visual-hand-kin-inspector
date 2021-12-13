@@ -42,11 +42,15 @@ int main(int argc, char** argv)
 
         auto newPose = posedet.poseUpdate(imageIn); 
 
-        cv::imshow("Realsense", newPose.first);
-        if (cv::waitKey(5) >= 0)
-            break;
+        if(newPose.first){
+
+            cv::imshow("Realsense", imageIn);
+            if (cv::waitKey(5) >= 0)
+                break;
 
         std::cout << "\n" << newPose.second.matrix() << std::endl;
+        }
+        
     }
 
     return EXIT_SUCCESS ;

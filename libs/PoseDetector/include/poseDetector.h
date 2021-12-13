@@ -16,7 +16,7 @@ class PoseDetector
                 );
     ~PoseDetector();
     void printMarker();
-    std::pair<cv::Mat,Eigen::Transform<double,3,Eigen::Affine>> poseUpdate(cv::Mat & currentFrame);
+    std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>> poseUpdate(cv::Mat & currentFrame);
     void fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]);
     void getIntrinsic(std::shared_ptr<rs2::pipeline> p);
 
