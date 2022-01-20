@@ -30,10 +30,12 @@ MeshKinematics::MeshKinematics(const std::string& filePath)
   if(!mdlLoader.loadModelFromFile(filePath)) { throw( std::runtime_error("Impossible to load model from " + filePath )); }
   model = mdlLoader.model();
   nLinks_ = model.getNrOfLinks();
+  std::cout << "Found LINKS: " <<  nLinks_ << std::endl;
 
   // Define the KinDynComputations object to perform kinematic computation
   if(!compModel_.loadRobotModel(model)) { throw( std::runtime_error("Impossible to create iKinDynComp object " )); }
   dofs_ = compModel_.getNrOfDegreesOfFreedom();
+  std::cout << "Found the following DOFS: " << dofs_ << std::endl;
 
   // Create objects for shape
   solidshapeObj = model.visualSolidShapes();
@@ -45,11 +47,19 @@ MeshKinematics::MeshKinematics(const std::string& filePath)
     std::string currentTargetFrame = model.getFrameName(frameIndex);
     frames_.push_back(currentTargetFrame);
 
-    // Save the fixed transformations between link and geometry refrence frames
-    visualTransform_.push_back(solidshapeVector[frameIndex][0]->getLink_H_geometry());
-
-    // Insert the frame name and path inside the urdfPath_ class container
-    meshPath_.push_back(make_pair(currentTargetFrame, solidshapeVector[frameIndex][0]->asExternalMesh()->getFileLocationOnLocalFileSystem()));
+    if(solidshapeVector[frameIndex].size()==0)
+    {
+      visualTransform_.push_back(iDynTree::Transform::Identity());
+      meshPath_.push_back(make_pair(currentTargetFrame, " "));
+    }
+    else
+    {
+      for(int visualIndex=0; visualIndex<solidshapeVector[frameIndex].size(); visualIndex++)
+      { 
+        visualTransform_.push_back(solidshapeVector[frameIndex][visualIndex]->getLink_H_geometry());
+        meshPath_.push_back(make_pair(currentTargetFrame, solidshapeVector[frameIndex][visualIndex]->asExternalMesh()->getFileLocationOnLocalFileSystem()));
+      }
+    }
 
   }
 
