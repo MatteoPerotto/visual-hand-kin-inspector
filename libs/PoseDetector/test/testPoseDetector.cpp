@@ -27,6 +27,11 @@ int main(int argc, char** argv)
         std:: cout << "ID: " << singleMarker.first << "\nBOOL: " << singleMarker.second.first << "\nPOSE:\n" << singleMarker.second.second.matrix() << std::endl;
     } 
 
+    for(auto& singleMarker: posedet.markerFixedTransform_)
+    {   
+        std:: cout << "ID: " << singleMarker.first << "\nFIXEDT:\n" << singleMarker.second.matrix() << std::endl;
+    } 
+
     //Initialize a shared pointer to the pipeline [CASE THE PIPELINE IS PASSED TO THE CONSTRUCTOR TO OBTAIN INTRINSIC ]
     std::shared_ptr<rs2::pipeline> p (new rs2::pipeline);
     posedet.getIntrinsic(p);

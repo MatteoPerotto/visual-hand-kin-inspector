@@ -45,9 +45,8 @@ PoseDetector::PoseDetector(std::vector<int>& markerIds, const int& dict, const f
     // std::sort (markerIds.begin(), markerIds.end()); 
     for(int id=0; id<markerIds.size() ; id++)
     {   
-        markerFixedTransform_.push_back(std::make_pair(markerIds[id],Eigen::Transform<double,3,Eigen::Affine>::Identity()));
-        auto arucoPair = std::make_pair(false,Eigen::Transform<double,3,Eigen::Affine>::Identity());
-        outPoses_[id] = arucoPair;
+        markerFixedTransform_[id]= Eigen::Transform<double,3,Eigen::Affine>::Identity();
+        outPoses_[id] = std::make_pair(false,Eigen::Transform<double,3,Eigen::Affine>::Identity());
     }    
     
 }
@@ -109,7 +108,7 @@ void PoseDetector::getIntrinsic(std::shared_ptr<rs2::pipeline> p)
 }
 
 
-void PoseDetector::defineFixedT(std::vector<std::pair<int,Eigen::Transform<double,3,Eigen::Affine>>> markerFixedTransform)
+void PoseDetector::defineFixedT(std::unordered_map<int,Eigen::Transform<double,3,Eigen::Affine>> markerFixedTransform)
 {
     markerFixedTransform_ = markerFixedTransform;
 }
@@ -157,14 +156,13 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
             homT = Eigen::Translation<double,3>(traslEigen);
             homT.rotate(rotEigen);   
 
-            outPoses_[foundMarkerIds_[i]] = std::make_pair(true,homT);
+            outPoses_[foundMarkerIds_[i]] = std::make_pair(true,homT*markerFixedTransform_[foundMarkerIds_[i]]);
 
             cv::aruco::drawAxis(currentFrame, cvIntrinsic, cvDistCoeff, rvecs[i], tvecs[i], 2*markerSize_);
         }
     }
     
     return outPoses_;
-   
 }
 
 

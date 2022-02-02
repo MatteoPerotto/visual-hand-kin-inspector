@@ -21,7 +21,7 @@ class PoseDetector
     std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> poseUpdate(cv::Mat & currentFrame);
     void fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]);
     void getIntrinsic(std::shared_ptr<rs2::pipeline> p);
-    void defineFixedT(std::vector<std::pair<int,Eigen::Transform<double,3,Eigen::Affine>>> markerFixedTransform);
+    void defineFixedT(std::unordered_map<int,Eigen::Transform<double,3,Eigen::Affine>> markerFixedTransform);
 
     cv::Ptr<cv::aruco::Dictionary> dictionary_;
     cv::Mat markerImage_;
@@ -32,11 +32,12 @@ class PoseDetector
     std::vector<int> foundMarkerIds_;
 
     std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> outPoses_;
-   
+    
+    std::unordered_map<int,Eigen::Transform<double,3,Eigen::Affine>> markerFixedTransform_;
     private:
     bool areIntrisicInit_  = false;
     float markerSize_;
-    std::vector<std::pair<int,Eigen::Transform<double,3,Eigen::Affine>>> markerFixedTransform_;
+    
 
 };
 
