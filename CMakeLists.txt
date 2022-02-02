@@ -14,6 +14,7 @@ add_subdirectory(libs)
 # Build the application
 
 find_package(YARP REQUIRED COMPONENTS cv dev eigen os sig)
+find_package(ICUB REQUIRED)
 
 # List of CPP (source) library files.
 set(${TARGET_NAME}_SRC
@@ -45,4 +46,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
                           meshKinematics
                           poseDetector
                           meshSuperimposer
+                          ICUB::iKin
                      )
