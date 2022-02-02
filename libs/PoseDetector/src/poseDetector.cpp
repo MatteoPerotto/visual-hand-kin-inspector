@@ -13,27 +13,43 @@
 
 
 // Constructor 
-PoseDetector::PoseDetector( Eigen::Transform<double,3,Eigen::Affine> cameraExt, Eigen::MatrixXd cameraInt, Eigen::MatrixXd distCoeff )
+PoseDetector::PoseDetector(std::vector<int>& markerIds, const int& dict, const float& markerMetersSize, Eigen::Transform<double,3,Eigen::Affine> cameraExt, Eigen::MatrixXd cameraInt, Eigen::MatrixXd distCoeff )
 {
     // Initialize extrinsic parameters 
     cameraEstrinsic_ = cameraExt;
 
-    // Initialize intrinsic parameters 
+    // Initialize parameters 
     if(cameraInt.size()!=0)
     {
         cameraIntrinsic_ = cameraInt;
         areIntrisicInit_ = true;
     }
+
+    if(cameraExt.matrix().size()!=0)
+    {
+        cameraEstrinsic_ = cameraExt;
+    }
     
     if(distCoeff.size()!=0)
     {
         distCoeff_ = distCoeff;
-        areCoeffInit_ = true;
     }
 
     // Create the marker 
-    dictionary_ = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
-    cv::aruco::drawMarker(dictionary_, 23, 500, markerImage_, 1);
+    dictionary_ = cv::aruco::getPredefinedDictionary(dict);
+
+    // Assign size 
+    markerSize_ = markerMetersSize;
+
+    // Assign an identity transformation to each marker wrt some reference frame 
+    // std::sort (markerIds.begin(), markerIds.end()); 
+    for(int id=0; id<markerIds.size() ; id++)
+    {   
+        markerFixedTransform_.push_back(std::make_pair(markerIds[id],Eigen::Transform<double,3,Eigen::Affine>::Identity()));
+        auto arucoPair = std::make_pair(false,Eigen::Transform<double,3,Eigen::Affine>::Identity());
+        outPoses_[id] = arucoPair;
+    }    
+    
 }
 
 // Destructor 
@@ -43,7 +59,8 @@ PoseDetector::~PoseDetector()
 }
 
 void PoseDetector::printMarker()
-{
+{   
+    cv::aruco::drawMarker(dictionary_, 23, 500, markerImage_, 1);
     cv::imwrite("marker23.png", markerImage_);
 }
 
@@ -66,8 +83,6 @@ void PoseDetector::fillIntrinsic(const float& ppx, const float& ppy, const float
     distCoeff_(3, 0) = coeff[3];
     distCoeff_(4, 0) = coeff[4];
 
-    std::cout << "Intrinsic filled\n" << cameraIntrinsic_ <<  std::endl;
-    std::cout << "Distortion filled\n" << distCoeff_ <<  std::endl;
 }
 
 void PoseDetector::getIntrinsic(std::shared_ptr<rs2::pipeline> p)
@@ -91,19 +106,25 @@ void PoseDetector::getIntrinsic(std::shared_ptr<rs2::pipeline> p)
     distCoeff_(3, 0) = i.coeffs[3];
     distCoeff_(4, 0) = i.coeffs[4];
 
-    std::cout << "Intrinsic retrieved\n" << cameraIntrinsic_ <<  std::endl;
-    std::cout << "Distortion retrieved\n" << distCoeff_ <<  std::endl;
-
 }
 
-std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>> PoseDetector::poseUpdate(cv::Mat& currentFrame)
-{
-    // [ADD MARKER DIM]
-    std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>> newPose;
-    bool isArucoDetected = false;
 
-    if(areIntrisicInit_==false && areCoeffInit_==false){
-        throw(std::runtime_error("[ERROR] Intrinsic parameters and distortion coefficients must be initialized. Can use the .fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]) method"));
+void PoseDetector::defineFixedT(std::vector<std::pair<int,Eigen::Transform<double,3,Eigen::Affine>>> markerFixedTransform)
+{
+    markerFixedTransform_ = markerFixedTransform;
+}
+
+
+std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> PoseDetector::poseUpdate(cv::Mat& currentFrame)
+{
+    
+    for(auto& singleMarker: outPoses_)
+    {   
+        singleMarker.second.first = false;
+    } 
+
+    if(areIntrisicInit_==false){
+        throw(std::runtime_error("[ERROR] Intrinsic parameters must be initialized. Can use the .fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]) method"));
     }
 
     cv::Mat cvIntrinsic;
@@ -121,35 +142,28 @@ std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>> PoseDetector::poseUpdat
     std::vector<std::vector<cv::Point2f>> markerCorners, rejectedCandidates;
     cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
     cv::aruco::detectMarkers(currentFrame, dictionary_, markerCorners, foundMarkerIds_, parameters, rejectedCandidates);
-    // SIZE IN MILLIMETERS 
-    cv::aruco::estimatePoseSingleMarkers(markerCorners, 20 , cvIntrinsic, cvDistCoeff, rvecs, tvecs);
-
-    if(markerCorners.size() !=0){
-        // Easy for one marker, change for the board
-        for(int i = 0; i < rvecs.size(); ++i)
+    cv::aruco::estimatePoseSingleMarkers(markerCorners, markerSize_, cvIntrinsic, cvDistCoeff, rvecs, tvecs);
+    
+    if(foundMarkerIds_.size()!=0)
+    {
+        cv::aruco::drawDetectedMarkers(currentFrame, markerCorners, foundMarkerIds_);
+       
+        for(int i = 0; i < foundMarkerIds_.size(); ++i)
         {
             cv::Rodrigues(rvecs[i],R);
             cv::cv2eigen(R,rotEigen);
             cv::cv2eigen(tvecs[i],traslEigen); 
         
             homT = Eigen::Translation<double,3>(traslEigen);
-            homT.rotate(rotEigen);    
-            std::cout << homT.matrix() << std::endl;   
+            homT.rotate(rotEigen);   
+
+            outPoses_[foundMarkerIds_[i]] = std::make_pair(true,homT);
+
+            cv::aruco::drawAxis(currentFrame, cvIntrinsic, cvDistCoeff, rvecs[i], tvecs[i], 2*markerSize_);
         }
-     	
-        // Draw and output 
-        cv::aruco::drawDetectedMarkers(currentFrame, markerCorners, foundMarkerIds_);
-        for (int i = 0; i < rvecs.size(); ++i) 
-        {
-            auto rvec = rvecs[i];
-            auto tvec = tvecs[i];
-            cv::aruco::drawAxis(currentFrame, cvIntrinsic, cvDistCoeff, rvec, tvec, 100);
-        }
-        isArucoDetected = true;
     }
     
-    newPose = std::make_pair(isArucoDetected,homT);
-    return newPose;
+    return outPoses_;
    
 }
 

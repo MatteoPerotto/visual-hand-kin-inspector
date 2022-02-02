@@ -16,22 +16,31 @@ int main(int argc, char** argv)
     // Eigen::Affine3d T_rt(Eigen::AngleAxisd(M_PI/2.0, Eigen::Vector3d::UnitZ()));
     // extP.matrix() = T_rt.matrix();
     // -unitary 
-    Eigen::Transform<double,3,Eigen::Affine> extP;
-    extP = Eigen::Transform<double,3,Eigen::Affine>::Identity();	
 
     // Initialize pose detector object 
-    PoseDetector posedet(extP);
+    std::vector<int> markerIds = {0,1,2,3};
+    PoseDetector posedet(markerIds,0,0.002);
+
+    // Test the tuples 
+    for(auto& singleMarker: posedet.outPoses_)
+    {   
+        std:: cout << "ID: " << singleMarker.first << "\nBOOL: " << singleMarker.second.first << "\nPOSE:\n" << singleMarker.second.second.matrix() << std::endl;
+    } 
 
     //Initialize a shared pointer to the pipeline [CASE THE PIPELINE IS PASSED TO THE CONSTRUCTOR TO OBTAIN INTRINSIC ]
     std::shared_ptr<rs2::pipeline> p (new rs2::pipeline);
     posedet.getIntrinsic(p);
-
+    std::cout << "Intrinsic retrieved\n" << posedet.cameraIntrinsic_ <<  std::endl;
+    std::cout << "Distortion retrieved\n" << posedet.distCoeff_ <<  std::endl;
+    
     const float fx = 615.3594360351562;
     const float fy = 615.5988159179688;
     const float ppx = 323.4178161621094;
     const float ppy = 248.9889831542969;
     const float coeff[5] = {0,0,0,0,0};
     posedet.fillIntrinsic(ppx, ppy, fx, fy, coeff);
+    std::cout << "Intrinsic filled\n" << posedet.cameraIntrinsic_ <<  std::endl;
+    std::cout << "Distortion filled\n" << posedet.distCoeff_ <<  std::endl;
     
     for (;;)
     {    
@@ -40,16 +49,18 @@ int main(int argc, char** argv)
         
         cv::Mat imageIn(cv::Size(640, 480), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
 
-        auto newPose = posedet.poseUpdate(imageIn); 
+        auto newPose = posedet.poseUpdate(imageIn);
 
-        if(newPose.first){
+        for(auto& singleMarker: posedet.outPoses_)
+        {   
+            std:: cout << "ID: " << singleMarker.first << "\nBOOL: " << singleMarker.second.first << "\nPOSE:\n" << singleMarker.second.second.matrix() << std::endl;
+        }  
 
-            cv::imshow("Realsense", imageIn);
-            if (cv::waitKey(5) >= 0)
-                break;
-
-        std::cout << "\n" << newPose.second.matrix() << std::endl;
-        }
+        cv::cvtColor(imageIn,imageIn, cv::COLOR_BGR2RGB);
+        
+        cv::imshow("Realsense", imageIn);
+        if (cv::waitKey(5) >= 0)
+            break;
         
     }
 

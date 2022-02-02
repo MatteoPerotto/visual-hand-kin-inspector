@@ -6,19 +6,22 @@
 #include<iostream>
 #include<librealsense2/rs.hpp> 
 #include<opencv4/opencv2/aruco.hpp>
+#include<unordered_map>
 
 class PoseDetector
 {
     public:
-    PoseDetector( Eigen::Transform<double,3,Eigen::Affine> cameraExt, 
+    PoseDetector( std::vector<int>& markerIds, const int& dict, const float& markerMetersSize, 
+                    Eigen::Transform<double,3,Eigen::Affine> cameraExt = Eigen::Transform<double,3,Eigen::Affine>::Identity(), 
                     Eigen::MatrixXd cameraInt = Eigen::MatrixXd::Zero(3,3), 
                     Eigen::MatrixXd distCoeff = Eigen::MatrixXd::Zero(5,1)
                 );
     ~PoseDetector();
     void printMarker();
-    std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>> poseUpdate(cv::Mat & currentFrame);
+    std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> poseUpdate(cv::Mat & currentFrame);
     void fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]);
     void getIntrinsic(std::shared_ptr<rs2::pipeline> p);
+    void defineFixedT(std::vector<std::pair<int,Eigen::Transform<double,3,Eigen::Affine>>> markerFixedTransform);
 
     cv::Ptr<cv::aruco::Dictionary> dictionary_;
     cv::Mat markerImage_;
@@ -28,9 +31,13 @@ class PoseDetector
     Eigen::MatrixXd distCoeff_;
     std::vector<int> foundMarkerIds_;
 
+    std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> outPoses_;
+   
     private:
     bool areIntrisicInit_  = false;
-    bool areCoeffInit_ = false;
+    float markerSize_;
+    std::vector<std::pair<int,Eigen::Transform<double,3,Eigen::Affine>>> markerFixedTransform_;
+
 };
 
 #endif //POSE_DETECTOR
