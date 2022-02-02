@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 
     // Initialize pose detector object 
     std::vector<int> markerIds = {0,1,2,3};
-    PoseDetector posedet(markerIds,0,0.002);
+    PoseDetector posedet(markerIds,0,0.02);
 
     // Test the tuples 
     for(auto& singleMarker: posedet.outPoses_)
