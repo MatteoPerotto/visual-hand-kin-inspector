@@ -26,7 +26,7 @@ MeshKinematics::MeshKinematics(const std::string& filePath)
   std::vector<std::vector<iDynTree::SolidShape*>> solidshapeVector;
   iDynTree::Transform visualH;
 
-  // Load the modl in model loader object
+  // Load the model in model loader object
   if(!mdlLoader.loadModelFromFile(filePath)) { throw( std::runtime_error("Impossible to load model from " + filePath )); }
   model = mdlLoader.model();
   nLinks_ = model.getNrOfLinks();
@@ -36,6 +36,12 @@ MeshKinematics::MeshKinematics(const std::string& filePath)
   if(!compModel_.loadRobotModel(model)) { throw( std::runtime_error("Impossible to create iKinDynComp object " )); }
   dofs_ = compModel_.getNrOfDegreesOfFreedom();
   std::cout << "Found the following DOFS: " << dofs_ << std::endl;
+
+  for(int i=0;i<dofs_;i++ )
+  {
+    auto jname = model.getJointName(i);
+    std::cout << jname << std::endl;
+  }
 
   // Create objects for shape
   solidshapeObj = model.visualSolidShapes();
