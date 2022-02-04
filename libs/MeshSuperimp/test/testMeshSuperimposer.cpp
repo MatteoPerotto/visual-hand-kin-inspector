@@ -46,7 +46,7 @@ int main(int argc, char** argv){
 
     Eigen::Transform<double,3,Eigen::Affine> mytransform2;
     mytransform2 = Eigen::Transform<double,3,Eigen::Affine>::Identity();
-    mytransform2 *= Eigen::Translation<double,3>(50,75,500);
+    mytransform2 *= Eigen::Translation<double,3>(0,0,500);
 
     std::vector<Eigen::Transform<double,3,Eigen::Affine>> vectTransform;
     vectTransform.push_back(mytransform1);
@@ -69,6 +69,7 @@ int main(int argc, char** argv){
 
         // Output the superimposed 
         cv::imshow("Webcam source", outImg);
+        cv::imwrite("mySuperim.png",outImg);
         if (cv::waitKey(5) >= 0)
             break;
         
