@@ -132,16 +132,20 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
     cv::eigen2cv(cameraIntrinsic_,cvIntrinsic);
     cv::eigen2cv(distCoeff_,cvDistCoeff);
     std::vector<cv::Vec3d> rvecs, tvecs;
-
+    
     Eigen::Matrix3d rotEigen = Eigen::Matrix3d::Zero(3,3);
     Eigen::Vector3d traslEigen = Eigen::Vector3d::Zero(3,1);
     cv::Mat R = cv::Mat::zeros(cv::Size(3, 3), CV_64FC1);
     Eigen::Transform<double,3,Eigen::Affine> homT;
+
+    //cv::Vec3d rvec, tvec;
+    //cv::Ptr<cv::aruco::GridBoard> board = cv::aruco::GridBoard::create(2, 2, 0.02, 0.02, 0);
     
     std::vector<std::vector<cv::Point2f>> markerCorners, rejectedCandidates;
     cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
     cv::aruco::detectMarkers(currentFrame, dictionary_, markerCorners, foundMarkerIds_, parameters, rejectedCandidates);
     cv::aruco::estimatePoseSingleMarkers(markerCorners, markerSize_, cvIntrinsic, cvDistCoeff, rvecs, tvecs);
+    //cv::aruco::estimatePoseBoard(markerCorners, foundMarkerIds_, board, cvIntrinsic, cvDistCoeff, rvec, tvec);
     
     if(foundMarkerIds_.size()!=0)
     {
@@ -162,6 +166,20 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
         }
     }
     
+    /*if(foundMarkerIds_.size()!=0)
+    {   
+        cv::Rodrigues(rvec,R);
+        cv::cv2eigen(R,rotEigen);
+        cv::cv2eigen(tvec,traslEigen); 
+        
+        homT = Eigen::Translation<double,3>(traslEigen);
+        homT.rotate(rotEigen);   
+
+        outPoses_[0] = std::make_pair(true,homT*markerFixedTransform_[0]);
+        cv::aruco::drawDetectedMarkers(currentFrame, markerCorners, foundMarkerIds_);
+        cv::aruco::drawAxis(currentFrame, cvIntrinsic, cvDistCoeff, rvec, tvec, 2*markerSize_);
+    }*/
+
     return outPoses_;
 }
 
