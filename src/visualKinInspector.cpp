@@ -27,12 +27,14 @@ EncoderReader::EncoderReader(std::string robotName, std::string partName)
     robotDriverOpt.put("device", "remote_controlboard");
     robotDriverOpt.put("local", "/test/client");
     robotDriverOpt.put("remote", "/" + robotName + "/" + partName); 
-    robotDriver_.open(robotDriverOpt);
+    
+    if(robotDriver_.open(robotDriverOpt))
+    {
+        robotDriver_.view(enc_);
+        enc_->getAxes(&jnts_);
+        std::cout << "Found ENCODERS: " << jnts_ << std::endl;
 
-    robotDriver_.view(enc_);
-    enc_->getAxes(&jnts_);
-    std::cout << "Found ENCODERS: " << jnts_ << std::endl;
-
+    }
 }
 
 EncoderReader::~EncoderReader()
@@ -40,41 +42,28 @@ EncoderReader::~EncoderReader()
     robotDriver_.close();
 }
 
-Eigen::VectorXd EncoderReader::readEncoders()
+std::unordered_map<std::string,Eigen::VectorXd>  EncoderReader::readEncoders()
 {   
-    yarp::sig::Vector encoders(jnts_); 
-    //yarp::sig::Vector fingersEncoders(9);
-    //Eigen::VectorXd armEncoders(7);
-    yarp::sig::VectorOf<double> allEncoders;
-    
-    //yarp::sig::Vector jointValues;
-    
+    yarp::sig::Vector encoders(9);
+    yarp::sig::Vector armEncoders(16);
+    yarp::sig::Vector allchainJoints;
+         
     // Obtain encoder values for the whole arm 
-    enc_->getEncoders(encoders.data());
+    enc_->getEncoders(armEncoders.data());
 
     // Select only hand encoders 
-    //yarp::eigen::toEigen(fingersEncoders) = yarp::eigen::toEigen(encoders);//.segment<9>(7);
-    //armEncoders = yarp::eigen::toEigen(encoders).segment<6>(0);
+    yarp::eigen::toEigen(encoders) = yarp::eigen::toEigen(armEncoders).segment<9>(7);//
+
+    std::unordered_map<std::string,Eigen::VectorXd> outputEncoders;
 
     for (auto& finger : fingers_)
     {
         yarp::sig::Vector chainJoints;
-        if(finger.second.getChainJoints(encoders, chainJoints)){
-            for(int z=0; z<chainJoints.size(); z++)
-            {
-            allEncoders.push_back(chainJoints[z]);
-            }
-        }
-
+        finger.second.getChainJoints(encoders, chainJoints);
+        Eigen::VectorXd chainJointsEigen = yarp::eigen::toEigen(chainJoints) * M_PI / 180.0;
+        outputEncoders[finger.first] = chainJointsEigen;    
     }
-
-    Eigen::VectorXd allFingersEigen = yarp::eigen::toEigen(allEncoders) * M_PI / 180.0;
-    //Eigen::VectorXd encoderDof(armEncoders.size() + allFingersEigen.size());
-    //encoderDof << armEncoders, allFingersEigen;
-
-    //return encoderDof;
-    std::cout << "TOTAL ENCODERS " << allFingersEigen.size() << std::endl;
-    return allFingersEigen;
+    return outputEncoders;
 }   
 
 

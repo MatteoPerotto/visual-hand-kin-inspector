@@ -14,7 +14,7 @@ class EncoderReader
     public:
     EncoderReader(std::string robotName, std::string partName);
     ~EncoderReader();
-    Eigen::VectorXd readEncoders();
+    std::unordered_map<std::string, Eigen::VectorXd> readEncoders();
     std::unordered_map<std::string, iCub::iKin::iCubFinger> fingers_;
 
     private:
