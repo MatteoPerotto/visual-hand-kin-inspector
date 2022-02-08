@@ -12,17 +12,18 @@
 class EncoderReader
 {
     public:
-    EncoderReader(std::string robotName, std::string partName);
+    EncoderReader(std::string robotName, std::string partName, std::vector<std::string> dofList);
     ~EncoderReader();
-    std::unordered_map<std::string, Eigen::VectorXd> readEncoders();
+    Eigen::VectorXd readEncoders();
     std::unordered_map<std::string, iCub::iKin::iCubFinger> fingers_;
-
+    Eigen::VectorXd encoderReads_;
+    
     private:
     yarp::dev::PolyDriver robotDriver_;
     yarp::dev::PolyDriver analogDriver_;
     int jnts_;
     yarp::dev::IEncoders *enc_;
-    //Eigen::Map<Eigen::VectorXd> encoderReads_;
+    std::vector<std::string> dofList_;
 };
 
 
