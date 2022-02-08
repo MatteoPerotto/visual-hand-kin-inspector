@@ -22,6 +22,7 @@ class MeshKinematics
     std::size_t dofs_;
     std::size_t nLinks_;
     std::vector<std::pair<std::string,std::string>> meshPath_;
+    std::vector<std::string> dofList_;
   private:
     std::vector<std::string> frames_;
     std::vector<iDynTree::Transform> visualTransform_;

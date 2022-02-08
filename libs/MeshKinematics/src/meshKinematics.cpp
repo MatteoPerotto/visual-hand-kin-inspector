@@ -30,7 +30,7 @@ MeshKinematics::MeshKinematics(const std::string& filePath)
   if(!mdlLoader.loadModelFromFile(filePath)) { throw( std::runtime_error("Impossible to load model from " + filePath )); }
   model = mdlLoader.model();
   nLinks_ = model.getNrOfLinks();
-  std::cout << "Found LINKS: " <<  nLinks_ << std::endl;
+  std::cout << "Found the following LINKS: " <<  nLinks_ << std::endl;
 
   // Define the KinDynComputations object to perform kinematic computation
   if(!compModel_.loadRobotModel(model)) { throw( std::runtime_error("Impossible to create iKinDynComp object " )); }
@@ -40,7 +40,8 @@ MeshKinematics::MeshKinematics(const std::string& filePath)
   for(int i=0;i<dofs_;i++ )
   {
     auto jname = model.getJointName(i);
-    std::cout << jname << std::endl;
+    dofList_.push_back(jname);
+    std::cout << "JOINT" << i << ": " << dofList_[i] << std::endl;
   }
 
   // Create objects for shape
@@ -76,6 +77,7 @@ MeshKinematics::~MeshKinematics()
 {
 
 }
+
 
 // Update method - it returns the transformations of all visual reference frames given the change in dof
 std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenCoord)
