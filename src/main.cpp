@@ -30,7 +30,8 @@ int main(int arc, char** argv)
 
     // Initialize the mesh kinematic calculator 
     MeshKinematics meshKinObject(argv[1]); 
-    auto meshPaths = meshKinObject.meshPath_; 
+    auto meshPaths = meshKinObject.meshPath_;
+    auto dofList = meshKinObject.dofList_;
 
     int scaleFactor = 1000;   
 
@@ -44,13 +45,7 @@ int main(int arc, char** argv)
     
     // Here read from encoders in simulation
     // EncoderReader encRead("wristMk2Sim","left_wrist");
-    EncoderReader encRead("icubSim","left_arm");
-
-    Eigen::VectorXd q(meshKinObject.dofs_);
-    size_t samples = 5000;
-    Eigen::MatrixXd m(samples,meshKinObject.dofs_);
-    m = Eigen::MatrixXd::Zero(samples, meshKinObject.dofs_);
-    
+    EncoderReader encRead("icubSim","left_arm",dofList);   
 
     // Fill extrinsic (identity transformation)
     Eigen::Transform<double,3,Eigen::Affine> extP;
@@ -86,10 +81,9 @@ int main(int arc, char** argv)
 
     //cv::VideoWriter video("d1.avi", cv::VideoWriter::fourcc('M','J','P','G'), 30, cv::Size(640,480));
     
-    // Define the constant transform for each maker wrt the hand RF
+    //Define the constant transform for each maker wrt the hand RF
     
-    Eigen::Vector3d traslVect(-0.0196458, 0.0243051, 0);
-    Eigen::Transform<double, 3, Eigen::Affine> fixedTransform;
+    Eigen::Transform<double, 3, Eigen::Affine> arucoTransform;
     Eigen::Transform<double, 3, Eigen::Affine> fixedTransform2;
 
     Eigen::Matrix3d R;
@@ -108,22 +102,9 @@ int main(int arc, char** argv)
     T(1) = 0.0243051;
     T(2) = 0.0384987;
 
-    //fixedTransform.linear() = R;
-    //fixedTransform.translation() = T;
-
-
-    fixedTransform = Eigen::Translation<double, 3>(T);
-    fixedTransform.rotate(R);
-    fixedTransform = fixedTransform.inverse();
-
-    std::cout << fixedTransform.matrix() << std::endl;
-
-
-    //fixedTransform*=Eigen::AngleAxis<double>(-0.5*M_PI, Eigen::Vector3d::UnitX());
-    
-    //fixedTransform = Eigen::AngleAxis<double>(0.5*M_PI, Eigen::Vector3d::UnitY())*Eigen::AngleAxis<double>(0.5*M_PI, Eigen::Vector3d::UnitZ());  
-    //fixedTransform.translate(traslVect); 
-
+    arucoTransform = Eigen::Translation<double,3>(T);
+    arucoTransform.rotate(R);
+    arucoTransform = arucoTransform.inverse();
 
     Eigen::Matrix3d R2 = Eigen::AngleAxis<double>(Eigen::AngleAxis<double>(-0.261799319827, Eigen::Vector3d::UnitY())*Eigen::AngleAxis<double>(-1.57079632679, Eigen::Vector3d::UnitX())).toRotationMatrix();  
     Eigen::Vector3d T2;
@@ -131,43 +112,37 @@ int main(int arc, char** argv)
     T2(1) = -0.0055568;
     T2(2) = 0.0136938323083;
 
-    //fixedTransform.linear() = R;
-    //fixedTransform.translation() = T;
-    fixedTransform2 = Eigen::Translation<double, 3>(T2);
+    fixedTransform2 = Eigen::Translation<double,3>(T2);
     fixedTransform2.rotate(R2);
     fixedTransform2 = fixedTransform2.inverse();
 
+    Eigen::Vector3d BT;
+    BT(0) = 0.01;
+    BT(1) = 0.01;
+    BT(2) = 0;
 
-    for(int i=0;i<samples;i++)
+    Eigen::Transform<double, 3, Eigen::Affine> cornerTranslation;
+    cornerTranslation = Eigen::Translation<double,3>(BT);
+
+    for(;;)
     {   
         // Read the image 
         cv::Mat myImg;
         myImg = imgStr.readFrame();
-    
+        
         // Obtain the trasform of the aruco marker
-        auto newMarkerPose = poseDet.poseUpdate(myImg);
-
-        cv::imshow("Webcam source", myImg);
+        auto newMarkerPose = poseDet.markerPoseUpdate(myImg);
 
         // Extract encoder readings 
-        auto enc = encRead.readEncoders();
-        Eigen::VectorXd encoderSignal(20);
-        encoderSignal << enc["little"][0],enc["thumb"][0],0,enc["middle"][0],
-            enc["ring"][0],enc["index"][0],enc["index"][1],enc["index"][2],enc["index"][3],
-            enc["ring"][1],enc["ring"][2],enc["ring"][3],enc["middle"][1],enc["middle"][2],
-            enc["middle"][3],enc["thumb"][1],enc["thumb"][2],enc["thumb"][3],enc["little"][1],
-            enc["thumb"][2],enc["thumb"][3];
-
-        std::cout << "ENCODERS: "<< encoderSignal.size() << "\n" << encoderSignal << std::endl;
+        auto encoderSignal = encRead.readEncoders();
         
         // Update the position of the mesh in world RF
         std::vector<Eigen::Transform<double, 3, Eigen::Affine>> meshTransform;
-        //meshTransform = meshKinObject.updateConfiguration(m.row(i));
         meshTransform = meshKinObject.updateConfiguration(encoderSignal);
          
         for(int j=0; j<meshTransform.size(); j++)
         {
-                meshTransform[j] = newMarkerPose[0].second*fixedTransform*fixedTransform2*meshTransform[j]; 
+                meshTransform[j] = newMarkerPose[0].second*arucoTransform*cornerTranslation*fixedTransform2*meshTransform[j]; 
                 meshTransform[j].translation()*= scaleFactor;
         }
 
@@ -175,6 +150,7 @@ int main(int arc, char** argv)
         //cv::cvtColor(outImg, outImg, cv::COLOR_BGR2RGB);
         //video.write(outImg);
         cv::imshow("Webcam source", outImg);
+    
         //std::this_thread::sleep_for(std::chrono::milliseconds(100));
         if (cv::waitKey(5) >= 0)
             break;
