@@ -8,7 +8,7 @@
     <visual>
       <origin xyz="0.0576542978428 -0.0055568 0.0136938323083" rpy="-1.57079632679 -0.261799319827 5.74693715701688e-17"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftTopCoverMarker.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftTopCoverMarker.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -24,7 +24,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="3.14159265358979 0.0 0.0"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftThumb0.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftThumb0.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -48,7 +48,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="3.14159265358979 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftThumb1.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftThumb1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -72,7 +72,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftThumb2.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftThumb2.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -96,7 +96,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 3.14159265358979 0.0"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftThumb3.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftThumb3.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -127,7 +127,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftIndex0.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftIndex0.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -151,7 +151,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftIndex1.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftIndex1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -175,7 +175,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftIndex2.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftIndex2.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -199,7 +199,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="3.14159265358979 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftIndex3.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftIndex3.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -230,7 +230,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="3.14159265358979 0.0 1.5707963267949"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftMiddle0.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftMiddle0.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -254,7 +254,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftMiddle1.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftMiddle1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -278,7 +278,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftMiddle2.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftMiddle2.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -302,7 +302,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftMiddle3.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftMiddle3.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -333,7 +333,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftRing0.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftRing0.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -357,7 +357,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="1.5707963267949 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftRing1.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftRing1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -381,7 +381,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftRing2.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftRing2.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -405,7 +405,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="3.14159265358979 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftRing3.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftRing3.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -436,7 +436,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="-3.14159265358979 -1.5707963267949 1.5707963267949"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftLittle0.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftLittle0.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -460,7 +460,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 3.14159265358979 1.5707963267949"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftLittle1.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftLittle1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -484,7 +484,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftLittle2.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftLittle2.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
@@ -508,7 +508,7 @@
     <visual>
       <origin xyz="0.0 0.0 0.0" rpy="3.14159265358979 0.0 3.14159265358979"/>
       <geometry>
-        <mesh filename="package://iCub/meshes/full_LeftLittle3.obj" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://iCub/meshes/full_LeftLittle3.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 1 1"/>
