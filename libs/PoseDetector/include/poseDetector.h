@@ -18,7 +18,8 @@ class PoseDetector
                 );
     ~PoseDetector();
     void printMarker();
-    std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> poseUpdate(cv::Mat & currentFrame);
+    std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> markerPoseUpdate(cv::Mat & currentFrame);
+    std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> markerBoardUpdate(cv::Mat& currentFrame);
     void fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]);
     void getIntrinsic(std::shared_ptr<rs2::pipeline> p);
     void defineFixedT(std::unordered_map<int,Eigen::Transform<double,3,Eigen::Affine>> markerFixedTransform);
