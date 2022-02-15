@@ -20,18 +20,11 @@ find_package(ICUB REQUIRED)
 set(${TARGET_NAME}_SRC
         src/main.cpp
         src/visualKinInspector.cpp
-        libs/MeshKinematics/src/meshKinematics.cpp
-        libs/PoseDetector/src/poseDetector.cpp
-        libs/MeshSuperimp/src/meshSuperimposer.cpp
 )
 
 # List of HPP (header) library files.
 set(${TARGET_NAME}_HDR
-        src/visualKinInspector.h
-        libs/MeshKinematics/include/meshKinematics.h
-        libs/PoseDetector/include/poseDetector.h
-        libs/MeshSuperimp/include/meshSuperimposer.h
-        
+        src/visualKinInspector.h        
 )
                  
 add_executable(${PROJECT_NAME} ${${TARGET_NAME}_SRC} ${${TARGET_NAME}_HDR})
