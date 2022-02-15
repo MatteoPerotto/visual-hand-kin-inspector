@@ -27,16 +27,4 @@ class EncoderReader
 };
 
 
-class ImageStreamer
-{
-    public:
-    ImageStreamer(const std::string& readPortPrefix);
-    ~ImageStreamer();
-    cv::Mat readFrame();
-    void sendFrame(const cv::Mat& imgToBeSent);
-
-    yarp::os::Network yarp_;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> rgbPortIn_;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> rgbPortOut_;
-};
 
