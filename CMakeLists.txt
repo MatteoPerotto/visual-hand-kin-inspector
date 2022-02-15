@@ -19,12 +19,12 @@ find_package(ICUB REQUIRED)
 # List of CPP (source) library files.
 set(${TARGET_NAME}_SRC
         src/main.cpp
-        src/visualKinInspector.cpp
+        src/mk2EncoderReader.cpp
 )
 
 # List of HPP (header) library files.
 set(${TARGET_NAME}_HDR
-        src/visualKinInspector.h        
+        src/mk2EncoderReader.h        
 )
                  
 add_executable(${PROJECT_NAME} ${${TARGET_NAME}_SRC} ${${TARGET_NAME}_HDR})
