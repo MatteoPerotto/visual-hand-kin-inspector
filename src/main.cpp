@@ -10,7 +10,10 @@
 #include<meshSuperimposer.h>
 #include<thread>
 #include<chrono>
-#include<librealsense2/rs.hpp>
+
+#include<yarp/os/Network.h>
+#include<yarp/cv/Cv.h>
+#include<yarp/os/BufferedPort.h>
 
 // yarp connect /depthCamera/rgbImage:o /imageStreamer/P:i
 // yarp connect /imageStreamer/P:o /yarpview/img:i
@@ -26,14 +29,39 @@ int main(int arc, char** argv)
 {
     // Open communication
     std::string portsPrefix = "P";
-    ImageStreamer imgStr(portsPrefix); 
+    yarp::os::Network yarpNetwork;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> rgbPortIn;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> rgbPortOut;
+
+    // Chech network
+    if (!yarpNetwork.checkNetwork())
+    {
+        throw(std::runtime_error("[ERROR] YARP network is not available."));
+    }
+
+    // Open rgb input port
+    if (!(rgbPortIn.open("/imageStreamer/" + portsPrefix + ":i")))
+    {
+        throw(std::runtime_error("[ERROR] Cannot open an imageStreamer input port."));
+    }
+
+    // Open rgb output port
+    if (!(rgbPortOut.open("/imageStreamer/" + portsPrefix + ":o")))
+    {
+        throw(std::runtime_error("[ERROR] Cannot open an imageStreamer output port."));
+    }
+
+    // Create images
+    yarp::sig::ImageOf<yarp::sig::PixelRgb>* imgIn;
+    cv::Mat imgInCv;
+    cv::Mat outImg;
 
     // Initialize the mesh kinematic calculator 
     MeshKinematics meshKinObject(argv[1]); 
     auto meshPaths = meshKinObject.meshPath_;
     auto dofList = meshKinObject.dofList_;
-
-    int scaleFactor = 1000;   
+    int scaleFactor = 1000; 
+      
 
     // Print urdf mesh paths
     std::cout << "\nFound the following meshes:\n" << std::endl;
@@ -45,17 +73,17 @@ int main(int arc, char** argv)
     
     // Here read from encoders in simulation
     // EncoderReader encRead("wristMk2Sim","left_wrist");
-    EncoderReader encRead("icubSim","left_arm",dofList);   
+    EncoderReader encRead("icub","left_arm",dofList);   
 
     // Fill extrinsic (identity transformation)
     Eigen::Transform<double,3,Eigen::Affine> extP;
     extP = Eigen::Transform<double,3,Eigen::Affine>::Identity();
 
     // Define intrinsic
-    const float fx = 615.3594360351562;
-    const float fy = 615.5988159179688;
-    const float ppx = 323.4178161621094;
-    const float ppy = 248.9889831542969;
+    const float fx = 618.0714111328125;
+    const float fy = 617.783447265625;
+    const float ppx = 305.902252197265625;
+    const float ppy = 246.352935791015625;
     const float coeff[5] = {0,0,0,0,0};
 
     // Initialize pose detector object 
@@ -79,10 +107,8 @@ int main(int arc, char** argv)
 
     MeshSuperimposer mSup(meshPaths, extP, intP, 640, 480);
 
-    //cv::VideoWriter video("d1.avi", cv::VideoWriter::fourcc('M','J','P','G'), 30, cv::Size(640,480));
     
     //Define the constant transform for each maker wrt the hand RF
-    
     Eigen::Transform<double, 3, Eigen::Affine> arucoTransform;
     Eigen::Transform<double, 3, Eigen::Affine> fixedTransform2;
 
@@ -117,8 +143,8 @@ int main(int arc, char** argv)
     fixedTransform2 = fixedTransform2.inverse();
 
     Eigen::Vector3d BT;
-    BT(0) = 0.01;
-    BT(1) = 0.01;
+    BT(0) = -0.004;
+    BT(1) = 0.048;
     BT(2) = 0;
 
     Eigen::Transform<double, 3, Eigen::Affine> cornerTranslation;
@@ -127,11 +153,11 @@ int main(int arc, char** argv)
     for(;;)
     {   
         // Read the image 
-        cv::Mat myImg;
-        myImg = imgStr.readFrame();
+        imgIn = rgbPortOut.read();
+        imgInCv = yarp::cv::toCvMat(*imgIn);
         
         // Obtain the trasform of the aruco marker
-        auto newMarkerPose = poseDet.markerPoseUpdate(myImg);
+        auto newMarkerPose = poseDet.markerBoardUpdate(imgInCv);
 
         // Extract encoder readings 
         auto encoderSignal = encRead.readEncoders();
@@ -142,19 +168,14 @@ int main(int arc, char** argv)
          
         for(int j=0; j<meshTransform.size(); j++)
         {
-                meshTransform[j] = newMarkerPose[0].second*arucoTransform*cornerTranslation*fixedTransform2*meshTransform[j]; 
+                meshTransform[j] = newMarkerPose[0].second*cornerTranslation*arucoTransform*fixedTransform2*meshTransform[j]; 
                 meshTransform[j].translation()*= scaleFactor;
         }
 
-        cv::Mat outImg = mSup.meshSuperimpose(meshTransform,myImg);
-        //cv::cvtColor(outImg, outImg, cv::COLOR_BGR2RGB);
-        //video.write(outImg);
+        cv::Mat outImg = mSup.meshSuperimpose(meshTransform,imgInCv);
         cv::imshow("Webcam source", outImg);
-    
-        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
         if (cv::waitKey(5) >= 0)
             break;
     }
-    //video.release();
     
 }
