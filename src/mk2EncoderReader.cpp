@@ -1,5 +1,5 @@
 #include<iostream>
-#include<visualKinInspector.h>
+#include<mk2EncoderReader.h>
 #include<yarp/os/Bottle.h>
 
 #include<yarp/os/LogStream.h>
@@ -15,7 +15,8 @@
 EncoderReader::EncoderReader(std::string robotName, std::string partName, std::vector<std::string> dofList)
 {   
     // Instantiate fingers 
-    fingers_["thumb"] = iCub::iKin::iCubFinger("left_thumb_b");
+    //fingers_["thumb"] = iCub::iKin::iCubFinger("left_thumb_b");
+    fingers_["thumb"] = iCub::iKin::iCubFinger("left_thumb");
     fingers_["index"] = iCub::iKin::iCubFinger("left_index");
     fingers_["middle"] = iCub::iKin::iCubFinger("left_middle");
     fingers_["ring"] = iCub::iKin::iCubFinger("left_ring");

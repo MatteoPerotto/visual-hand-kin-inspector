@@ -1,5 +1,5 @@
 #include<iostream>
-#include<visualKinInspector.h>
+#include<mk2EncoderReader.h>
 #include<opencv4/opencv2/core.hpp>
 #include<opencv4/opencv2/imgproc.hpp>
 #include<opencv2/highgui.hpp>
@@ -14,6 +14,7 @@
 #include<yarp/os/Network.h>
 #include<yarp/cv/Cv.h>
 #include<yarp/os/BufferedPort.h>
+#include<yarp/sig/Image.h>
 
 // yarp connect /depthCamera/rgbImage:o /imageStreamer/P:i
 // yarp connect /imageStreamer/P:o /yarpview/img:i
@@ -73,11 +74,12 @@ int main(int arc, char** argv)
     
     // Here read from encoders in simulation
     // EncoderReader encRead("wristMk2Sim","left_wrist");
-    EncoderReader encRead("icub","left_arm",dofList);   
+    // EncoderReader encRead("icub","left_arm",dofList);  
+    EncoderReader encRead("icubSim","left_arm",dofList);   
 
     // Fill extrinsic (identity transformation)
     Eigen::Transform<double,3,Eigen::Affine> extP;
-    extP = Eigen::Transform<double,3,Eigen::Affine>::Identity();
+    extP = Eigen::Transform<double,3,Eigen::Aff ine>::Identity();
 
     // Define intrinsic
     const float fx = 618.0714111328125;
@@ -153,7 +155,7 @@ int main(int arc, char** argv)
     for(;;)
     {   
         // Read the image 
-        imgIn = rgbPortOut.read();
+        imgIn = rgbPortIn.read();
         imgInCv = yarp::cv::toCvMat(*imgIn);
         
         // Obtain the trasform of the aruco marker
@@ -161,6 +163,7 @@ int main(int arc, char** argv)
 
         // Extract encoder readings 
         auto encoderSignal = encRead.readEncoders();
+        std::cout << "I AM HERE" << std::endl;
         
         // Update the position of the mesh in world RF
         std::vector<Eigen::Transform<double, 3, Eigen::Affine>> meshTransform;

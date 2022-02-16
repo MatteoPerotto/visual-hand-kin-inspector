@@ -54,7 +54,7 @@ int main(int argc, char** argv)
         
         cv::Mat imageIn(cv::Size(640, 480), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
 
-        auto newPose = posedet.poseUpdate(imageIn);
+        auto newPose = posedet.markerBoardUpdate(imageIn);
 
         for(auto& singleMarker: posedet.outPoses_)
         {   
