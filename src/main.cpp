@@ -32,7 +32,6 @@ int main(int arc, char** argv)
     std::string portsPrefix = "P";
     yarp::os::Network yarpNetwork;
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> rgbPortIn;
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb>> rgbPortOut;
 
     // Chech network
     if (!yarpNetwork.checkNetwork())
@@ -44,12 +43,6 @@ int main(int arc, char** argv)
     if (!(rgbPortIn.open("/imageStreamer/" + portsPrefix + ":i")))
     {
         throw(std::runtime_error("[ERROR] Cannot open an imageStreamer input port."));
-    }
-
-    // Open rgb output port
-    if (!(rgbPortOut.open("/imageStreamer/" + portsPrefix + ":o")))
-    {
-        throw(std::runtime_error("[ERROR] Cannot open an imageStreamer output port."));
     }
 
     // Create images
@@ -79,7 +72,7 @@ int main(int arc, char** argv)
 
     // Fill extrinsic (identity transformation)
     Eigen::Transform<double,3,Eigen::Affine> extP;
-    extP = Eigen::Transform<double,3,Eigen::Aff ine>::Identity();
+    extP = Eigen::Transform<double,3,Eigen::Affine>::Identity();
 
     // Define intrinsic
     const float fx = 618.0714111328125;
@@ -89,11 +82,16 @@ int main(int arc, char** argv)
     const float coeff[5] = {0,0,0,0,0};
 
     // Initialize pose detector object 
-    std::vector<int> markerIds = {0,1,2,3};
-    PoseDetector poseDet(markerIds,0,0.02);
-    
+    PoseDetector poseDet(0);
+    std::vector<int> markerIds1 = {0,1,2,3};
+    std::vector<int> markerIds2 = {4,5,6,7};
+    poseDet.addBoard(0,2,2,0.02,0.005,markerIds1);
+    poseDet.addBoard(1,2,2,0.02,0.005,markerIds2);
+
     // Fill intrinsic 
     poseDet.fillIntrinsic(ppx, ppy, fx, fy, coeff);
+    std::cout << "Intrinsic filled\n" << poseDet.cameraIntrinsic_ <<  std::endl;
+    std::cout << "Distortion filled\n" << poseDet.distCoeff_ <<  std::endl;
 
     // Initilaize superimposer 
     Eigen::Matrix3d intP;
@@ -109,7 +107,6 @@ int main(int arc, char** argv)
 
     MeshSuperimposer mSup(meshPaths, extP, intP, 640, 480);
 
-    
     //Define the constant transform for each maker wrt the hand RF
     Eigen::Transform<double, 3, Eigen::Affine> arucoTransform;
     Eigen::Transform<double, 3, Eigen::Affine> fixedTransform2;
@@ -159,16 +156,16 @@ int main(int arc, char** argv)
         imgInCv = yarp::cv::toCvMat(*imgIn);
         
         // Obtain the trasform of the aruco marker
-        auto newMarkerPose = poseDet.markerBoardUpdate(imgInCv);
+        auto newMarkerPose = poseDet.poseUpdate(imgInCv);
 
         // Extract encoder readings 
         auto encoderSignal = encRead.readEncoders();
-        std::cout << "I AM HERE" << std::endl;
         
+         std::cout << "Heerre" << std::endl;
         // Update the position of the mesh in world RF
         std::vector<Eigen::Transform<double, 3, Eigen::Affine>> meshTransform;
         meshTransform = meshKinObject.updateConfiguration(encoderSignal);
-         
+        
         for(int j=0; j<meshTransform.size(); j++)
         {
                 meshTransform[j] = newMarkerPose[0].second*cornerTranslation*arucoTransform*fixedTransform2*meshTransform[j]; 
