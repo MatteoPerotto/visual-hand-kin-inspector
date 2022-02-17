@@ -92,19 +92,25 @@ void PoseDetector::addBoard(const int id , const int X, const int Y, const doubl
     boardFixedTransform_[id] = boardFixedTransform;
     outPoses_[id] = std::make_pair(false,Eigen::Transform<double,3,Eigen::Affine>::Identity());
     markersSize_[id] = markerSize;
+    areBoardInit_ = true;
 }
 
 
 std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> PoseDetector::poseUpdate(cv::Mat& currentFrame)
-{
+{   
     for(auto& b: outPoses_)
     {   
         b.second.first = false;
     } 
 
-    if(areIntrisicInit_==false)
+    if(areIntrisicInit_== false )
     {
         throw(std::runtime_error("[ERROR] Intrinsic parameters must be initialized. Can use the .fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]) method"));
+    }
+
+    if(areBoardInit_== false )
+    {
+        throw(std::runtime_error("[ERROR] No board initialized. Please call: addBoard(const int id , const int X, const int Y, const double markerSize, const double markerSpacing, std::vector<int> markerIds, Eigen::Transform<double,3,Eigen::Affine> boardFixedTransform )"));
     }
 
     cv::Mat cvCameraIntrinsic; 

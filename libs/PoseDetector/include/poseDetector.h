@@ -36,6 +36,7 @@ class PoseDetector
     cv::Ptr<cv::aruco::Dictionary> dict_;
     bool areIntrisicInit_  = false;
     int dictionary_;
+    bool areBoardInit_ = false;
 
 };
 
