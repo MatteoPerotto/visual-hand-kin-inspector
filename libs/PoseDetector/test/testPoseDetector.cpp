@@ -1,35 +1,30 @@
-#include<iostream>
 #include<Eigen/Geometry>
+#include<iostream>
 #include<librealsense2/rs.hpp>
 #include<poseDetector.h>
 #include<opencv4/opencv2/aruco.hpp>
 #include<opencv4/opencv2/core.hpp>
 #include<opencv4/opencv2/highgui.hpp>
-#include<opencv4/opencv2/imgcodecs.hpp>
 #include<opencv4/opencv2/imgproc/imgproc.hpp>
-#include<opencv4/opencv2/videoio.hpp>
 
 int main(int argc, char** argv)
 {
-    // Initialize extrinsic 
-    // -generic
-    // Eigen::Affine3d T_rt(Eigen::AngleAxisd(M_PI/2.0, Eigen::Vector3d::UnitZ()));
-    // extP.matrix() = T_rt.matrix();
-    // -unitary 
-
     // Initialize pose detector object 
-    std::vector<int> markerIds = {0,1,2,3};
-    PoseDetector posedet(markerIds,0,0.02);
+    PoseDetector posedet(0); 
+    std::vector<int> markerIds1 = {0,1,2,3};
+    std::vector<int> markerIds2 = {4,5,6,7};
+    posedet.addBoard(0,2,2,0.02,0.005,markerIds1);
+    posedet.addBoard(1,2,2,0.02,0.005,markerIds2);
 
+    for(auto& b: posedet.boardPtr_)
+    {
+        std::cout << "Board id: " << b.first << std::endl;
+    }
+ 
     // Test the tuples 
     for(auto& singleMarker: posedet.outPoses_)
     {   
-        std:: cout << "ID: " << singleMarker.first << "\nBOOL: " << singleMarker.second.first << "\nPOSE:\n" << singleMarker.second.second.matrix() << std::endl;
-    } 
-
-    for(auto& singleMarker: posedet.markerFixedTransform_)
-    {   
-        std:: cout << "ID: " << singleMarker.first << "\nFIXEDT:\n" << singleMarker.second.matrix() << std::endl;
+        std::cout << "ID: " << singleMarker.first << "\nBOOL: " << singleMarker.second.first << "\nPOSE:\n" << singleMarker.second.second.matrix() << std::endl;
     } 
 
     //Initialize a shared pointer to the pipeline [CASE THE PIPELINE IS PASSED TO THE CONSTRUCTOR TO OBTAIN INTRINSIC ]
@@ -54,15 +49,15 @@ int main(int argc, char** argv)
         
         cv::Mat imageIn(cv::Size(640, 480), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
 
-        auto newPose = posedet.markerBoardUpdate(imageIn);
+        cv::cvtColor(imageIn,imageIn, cv::COLOR_BGR2RGB);
+        auto newPose = posedet.poseUpdate(imageIn);
 
         for(auto& singleMarker: posedet.outPoses_)
         {   
             std:: cout << "ID: " << singleMarker.first << "\nBOOL: " << singleMarker.second.first << "\nPOSE:\n" << singleMarker.second.second.matrix() << std::endl;
         }  
 
-        cv::cvtColor(imageIn,imageIn, cv::COLOR_BGR2RGB);
-        
+
         cv::imshow("Realsense", imageIn);
         if (cv::waitKey(5) >= 0)
             break;
