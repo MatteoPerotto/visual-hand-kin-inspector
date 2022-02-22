@@ -14,7 +14,7 @@
 
 
 // Constructor 
-MeshSuperimposer::MeshSuperimposer(std::vector<std::pair<std::string,std::string>>& paths, Eigen::Transform<double,3,Eigen::Affine>& cameraExt, Eigen::Matrix3d cameraInt, int imgW, int imgH)
+MeshSuperimposer::MeshSuperimposer(std::vector<std::pair<std::string,std::string>>& paths, Eigen::Matrix3d cameraInt, int imgW, int imgH, Eigen::Transform<double,3,Eigen::Affine> cameraExt)
 {
     // Save the mesh path
     meshN_ = paths.size();

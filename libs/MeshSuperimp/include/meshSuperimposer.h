@@ -9,7 +9,7 @@
 class MeshSuperimposer 
 {
 public:
-    MeshSuperimposer(std::vector<std::pair<std::string,std::string>>& paths, Eigen::Transform<double,3,Eigen::Affine>& cameraExt, Eigen::Matrix3d cameraInt, int imgW, int imgH);
+    MeshSuperimposer(std::vector<std::pair<std::string,std::string>>& paths, Eigen::Matrix3d cameraInt, int imgW, int imgH, Eigen::Transform<double,3,Eigen::Affine> cameraExt = Eigen::Transform<double,3,Eigen::Affine>::Identity());
     ~MeshSuperimposer();
 
     cv::Mat meshSuperimpose(std::vector<Eigen::Transform<double,3,Eigen::Affine>>& eigTransforms, cv::Mat currentFrame);
@@ -17,7 +17,6 @@ public:
 
 private:
     size_t meshN_;
-    // ModelPathContainer is an unordered_map of two strings, one for the name and one for the path
     SICAD::ModelPathContainer meshesContainer_; 
     std::vector<std::string> idContainer_;
     Eigen::MatrixXd cameraIntrinsic_;
