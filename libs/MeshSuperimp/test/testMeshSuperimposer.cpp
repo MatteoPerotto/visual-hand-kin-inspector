@@ -38,7 +38,7 @@ int main(int argc, char** argv){
     paths.push_back(std::make_pair("wrist","/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_wrist_hand_prt.stl"));
     paths.push_back(std::make_pair("palm","/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_hand_palm_naked_prt.stl"));
 
-    MeshSuperimposer mSup(paths, extP, intP, 640, 480);
+    MeshSuperimposer mSup(paths, intP, 640, 480, extP);
 
     Eigen::Transform<double,3,Eigen::Affine> mytransform1;
     mytransform1 = Eigen::Transform<double,3,Eigen::Affine>::Identity();
