@@ -20,24 +20,31 @@ find_package(ICUB REQUIRED)
 set(${TARGET_NAME}_SRC
         src/main.cpp
         src/mk2EncoderReader.cpp
+        src/realsenseYarp.cpp
+        src/visualInspector.cpp
 )
 
 # List of HPP (header) library files.
 set(${TARGET_NAME}_HDR
-        src/mk2EncoderReader.h        
+        src/mk2EncoderReader.h    
+        src/realsenseYarp.h
+        src/visualInspector.h    
 )
+
+# Set config file 
+set(${TARGET_NAME}_CONF /conf/config.ini)
                  
 add_executable(${PROJECT_NAME} ${${TARGET_NAME}_SRC} ${${TARGET_NAME}_HDR})
 target_include_directories(${PROJECT_NAME} PUBLIC "src")
 target_link_libraries(${PROJECT_NAME} PUBLIC 
 			YARP::YARP_cv 
-                          YARP::YARP_dev
-                          YARP::YARP_eigen
-                          YARP::YARP_init
-                          YARP::YARP_os
-                          YARP::YARP_sig
-                          meshKinematics
-                          poseDetector
-                          meshSuperimposer
-                          ICUB::iKin
+                       YARP::YARP_dev
+                       YARP::YARP_eigen
+                       YARP::YARP_init
+                       YARP::YARP_os
+                       YARP::YARP_sig
+                       meshKinematics
+                       poseDetector
+                       meshSuperimposer
+                       ICUB::iKin
                      )
