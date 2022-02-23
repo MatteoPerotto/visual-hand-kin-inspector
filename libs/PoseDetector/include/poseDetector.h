@@ -11,8 +11,8 @@ class PoseDetector
 {
     public:
     PoseDetector(   int dict,
-                    Eigen::Transform<double,3,Eigen::Affine> cameraExt = Eigen::Transform<double,3,Eigen::Affine>::Identity(), 
                     Eigen::MatrixXd cameraInt = Eigen::MatrixXd::Zero(3,3), 
+                    Eigen::Transform<double,3,Eigen::Affine> cameraExt = Eigen::Transform<double,3,Eigen::Affine>::Identity(), 
                     Eigen::MatrixXd distCoeff = Eigen::MatrixXd::Zero(5,1)
                 );
     ~PoseDetector();
@@ -21,6 +21,8 @@ class PoseDetector
     std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> poseUpdate(cv::Mat& currentFrame);
     void fillIntrinsic(const float& ppx, const float& ppy, const float& fx, const float& fy, const float (&coeff)[5]);
     void getIntrinsic(std::shared_ptr<rs2::pipeline> p);
+    void printBoards();
+    void printBoardInfo();
 
     Eigen::Transform<double,3,Eigen::Affine> cameraEstrinsic_;
     Eigen::MatrixXd cameraIntrinsic_; 

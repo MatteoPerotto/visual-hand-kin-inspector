@@ -5,10 +5,15 @@
 #include<opencv4/opencv2/core/eigen.hpp>
 #include<opencv4/opencv2/calib3d.hpp>
 #include<poseDetector.h>
+#include<string>
+#include<opencv2/imgcodecs.hpp>
+
+
+#include<iostream>
 
 
 // Constructor 
-PoseDetector::PoseDetector( int dict, Eigen::Transform<double,3,Eigen::Affine> cameraExt, Eigen::MatrixXd cameraInt, Eigen::MatrixXd distCoeff )
+PoseDetector::PoseDetector(int dict, Eigen::MatrixXd cameraInt, Eigen::Transform<double,3,Eigen::Affine> cameraExt,  Eigen::MatrixXd distCoeff )
 {
     // Initialize extrinsic parameters 
     cameraEstrinsic_ = cameraExt;
@@ -31,6 +36,7 @@ PoseDetector::PoseDetector( int dict, Eigen::Transform<double,3,Eigen::Affine> c
     }     
     
     dictionary_ = dict;
+    dict_ = cv::aruco::getPredefinedDictionary(dict);
 }
 
 // Destructor 
@@ -83,10 +89,8 @@ void PoseDetector::getIntrinsic(std::shared_ptr<rs2::pipeline> p)
 
 
 void PoseDetector::addBoard(const int id , const int X, const int Y, const double markerSize, const double markerSpacing, std::vector<int> markerIds, Eigen::Transform<double,3,Eigen::Affine> boardFixedTransform )
-{
-    cv::Ptr<cv::aruco::Dictionary> dict = cv::aruco::getPredefinedDictionary(dictionary_);
-    dict_ = dict; 
-    cv::Ptr<cv::aruco::GridBoard> board = cv::aruco::GridBoard::create(X, Y, markerSize, markerSpacing, dict);
+{   
+    cv::Ptr<cv::aruco::GridBoard> board = cv::aruco::GridBoard::create(X, Y, markerSize, markerSpacing, dict_);
     board->ids = markerIds;
     boardPtr_[id] = board;
     boardFixedTransform_[id] = boardFixedTransform;
@@ -95,9 +99,41 @@ void PoseDetector::addBoard(const int id , const int X, const int Y, const doubl
     areBoardInit_ = true;
 }
 
+void PoseDetector::printBoardInfo()
+{
+    for(auto& b: boardPtr_)
+    {   
+        std::cout << "*** BOARD ***" << std::endl;
+        std::cout << "Board: " << b.first << std::endl;  
+        std::cout << "Dictionary int: " << dictionary_ << std::endl;
+        std::cout << "Dictionary ptr: " << dict_ << std::endl;
+        std::cout << "Size: " << b.second->getGridSize() << std::endl;
+        std::cout << "MSize: " << b.second->getMarkerLength()  << std::endl;
+        std::cout << "Ptr: " << b.second << std::endl;
+        std::cout << "FixedT: " << std::endl << boardFixedTransform_[b.first].matrix() << std::endl;
+    
+        for(auto& i: b.second->ids)
+        {
+            std::cout << "Id " << i << std::endl;
+        } 
+    }
+}
+
+void PoseDetector::printBoards()
+{  
+    for(auto& b: boardPtr_)
+    {
+        cv::Mat boardImage;
+        b.second->draw( cv::Size(600, 500), boardImage);
+        std::string name = "board"+std::to_string(b.first)+".png";
+        cv::imwrite(name,boardImage);
+    }  
+    
+}
 
 std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>> PoseDetector::poseUpdate(cv::Mat& currentFrame)
 {   
+    
     for(auto& b: outPoses_)
     {   
         b.second.first = false;
@@ -118,6 +154,8 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
     cv::eigen2cv(cameraIntrinsic_,cvCameraIntrinsic);
     cv::eigen2cv(distCoeff_,cvDistCoeff);
 
+    std::cout << "Inrinsic" << std::endl << cvCameraIntrinsic << std::endl;
+
     std::vector<int> foundMarkerIds;
     std::vector<std::vector<cv::Point2f>> markerCorners, rejectedCandidates;
     cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
@@ -127,25 +165,27 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
 
     for(auto&  b: boardPtr_)
     {   
+        std::cout << b.second << std::endl;
         Eigen::Transform<double,3,Eigen::Affine> homT;
         Eigen::Matrix3d rotEigen = Eigen::Matrix3d::Zero(3,3);
         Eigen::Vector3d traslEigen = Eigen::Vector3d::Zero(3,1);
         cv::Mat R = cv::Mat::zeros(cv::Size(3, 3), CV_64FC1);
 
         cv::Vec3d rvec, tvec;
-        
+
         int isDetected = cv::aruco::estimatePoseBoard(markerCorners, foundMarkerIds, b.second, cvCameraIntrinsic, cvDistCoeff, rvec, tvec);
-    
+
         if(isDetected!=0) 
         {    
             cv::Rodrigues(rvec,R);
             cv::cv2eigen(R,rotEigen);
             cv::cv2eigen(tvec,traslEigen); 
-        
+
             homT = Eigen::Translation<double,3>(traslEigen);
             homT.rotate(rotEigen);   
 
             outPoses_[b.first] = std::make_pair(true,homT*boardFixedTransform_[b.first]);            
+            std::cout << "Pose board"<< b.first << std::endl <<  outPoses_[b.first].second.matrix() << std::endl;
             cv::aruco::drawAxis(currentFrame, cvCameraIntrinsic, cvDistCoeff, rvec, tvec, 2*markersSize_[b.first]);
         }
     }
