@@ -16,6 +16,7 @@
 class MeshKinematics
 {
   public:
+    MeshKinematics();
     MeshKinematics(const std::string& filePath);
     ~MeshKinematics();
     std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updateConfiguration(const Eigen::VectorXd& eigenCoord);

@@ -15,7 +15,12 @@
 #include<meshKinematics.h>
 
 
-// Constructor
+// Constructors
+
+MeshKinematics::MeshKinematics()
+{
+}
+
 MeshKinematics::MeshKinematics(const std::string& filePath)
 {
 
@@ -77,7 +82,6 @@ MeshKinematics::~MeshKinematics()
 {
 
 }
-
 
 // Update method - it returns the transformations of all visual reference frames given the change in dof
 std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenCoord)
