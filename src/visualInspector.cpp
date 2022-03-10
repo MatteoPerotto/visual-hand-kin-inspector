@@ -190,7 +190,7 @@ bool VisualInspector::configure(yarp::os::ResourceFinder& rf)
 
 double VisualInspector::getPeriod()
 {   
-    return 1.0;
+    return 0.0001;
 }
 
 
