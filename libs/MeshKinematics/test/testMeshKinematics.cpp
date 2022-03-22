@@ -2,7 +2,7 @@
 #include<meshKinematics.h>
 #include<Eigen/Dense>
 
-// ~/robotology-superbuild/src/icub-models/iCub/robots/left_wrist_mk2/model.urdf 
+// ~/robotology-superbuild/src/icub-models/iCub/robots/left_wrist_mk2/model.urdf
 
 // Main just to test the program
 int main(int argc, char* argv[])
@@ -25,10 +25,10 @@ int main(int argc, char* argv[])
       std::cout << "\n" << std::endl;
     }
 
-    //q0 is x, 
+    //q0 is x,
     q[0] = q[0];
     q[1] = q[1];
     q[2] = q[2]+3.14;
   }
-  
+
 }

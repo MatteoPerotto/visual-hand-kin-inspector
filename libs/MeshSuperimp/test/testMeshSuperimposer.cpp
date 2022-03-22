@@ -33,7 +33,7 @@ int main(int argc, char** argv){
     intP(2, 0) = 0;
     intP(2, 1) = 0;
     intP(2, 2) = 1;
-    
+
     std::vector<std::pair<std::string,std::string>> paths;
     paths.push_back(std::make_pair("wrist","/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_wrist_hand_prt.stl"));
     paths.push_back(std::make_pair("palm","/home/matteoperotto/robotology-superbuild/src/icub-models/iCub/meshes/simmechanics/sim_l_hand_palm_naked_prt.stl"));
@@ -62,21 +62,20 @@ int main(int argc, char** argv){
         rs2::frameset frames = p->wait_for_frames();
         rs2::video_frame color = frames.get_color_frame();
         cv::Mat imageIn(cv::Size(width, height), CV_8UC3, (void*)color.get_data(), cv::Mat::AUTO_STEP);
-        cv::cvtColor(imageIn, imageIn, cv::COLOR_BGR2RGB, 0); 
+        cv::cvtColor(imageIn, imageIn, cv::COLOR_BGR2RGB, 0);
 
-        // Superimpose 
+        // Superimpose
         cv::Mat outImg = mSup.meshSuperimpose(vectTransform,imageIn);
 
-        // Output the superimposed 
+        // Output the superimposed
         cv::imshow("Webcam source", outImg);
         cv::imwrite("mySuperim.png",outImg);
         if (cv::waitKey(5) >= 0)
             break;
-        
+
         j++;
-    }  
+    }
 
     return EXIT_SUCCESS ;
-    
-}
 
+}

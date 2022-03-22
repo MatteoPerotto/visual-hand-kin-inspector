@@ -67,7 +67,7 @@ MeshKinematics::MeshKinematics(const std::string& filePath)
     else
     {
       for(int visualIndex=0; visualIndex<solidshapeVector[frameIndex].size(); visualIndex++)
-      { 
+      {
         visualTransform_.push_back(solidshapeVector[frameIndex][visualIndex]->getLink_H_geometry());
         meshPath_.push_back(make_pair(currentTargetFrame, solidshapeVector[frameIndex][visualIndex]->asExternalMesh()->getFileLocationOnLocalFileSystem()));
       }

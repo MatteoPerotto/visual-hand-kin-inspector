@@ -1,12 +1,12 @@
 #ifndef MESH_SUPERIMPOSER
-#define MESH_SUPERIMPOSER 
+#define MESH_SUPERIMPOSER
 
 #include <Eigen/Geometry>
 #include <opencv4/opencv2/core.hpp>
 #include <opencv4/opencv2/aruco.hpp>
 #include <SuperimposeMesh/SICAD.h>
 
-class MeshSuperimposer 
+class MeshSuperimposer
 {
 public:
     MeshSuperimposer(std::vector<std::pair<std::string,std::string>>& paths, Eigen::Matrix3d cameraInt, int imgW, int imgH, Eigen::Transform<double,3,Eigen::Affine> cameraExt = Eigen::Transform<double,3,Eigen::Affine>::Identity());
@@ -17,7 +17,7 @@ public:
 
 private:
     size_t meshN_;
-    SICAD::ModelPathContainer meshesContainer_; 
+    SICAD::ModelPathContainer meshesContainer_;
     std::vector<std::string> idContainer_;
     Eigen::MatrixXd cameraIntrinsic_;
     Eigen::Transform<double,3,Eigen::Affine> cameraEstrinsic_;
@@ -25,4 +25,4 @@ private:
 };
 
 
-#endif // MESH_SUPERIMPOSER 
+#endif // MESH_SUPERIMPOSER
