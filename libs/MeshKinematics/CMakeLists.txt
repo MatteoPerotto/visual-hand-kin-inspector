@@ -19,4 +19,4 @@ add_library(${PROJECT_NAME}::${LIBRARY_TARGET_NAME} ALIAS ${LIBRARY_TARGET_NAME}
 target_link_libraries(${LIBRARY_TARGET_NAME} ${iDynTree_LIBRARIES} Eigen3::Eigen)
 target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC include)
 
-add_subdirectory(test)
+# add_subdirectory(test)
