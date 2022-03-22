@@ -2,7 +2,7 @@
 #include<Eigen/Geometry>
 #include<iostream>
 #include<unistd.h>
-#include<librealsense2/rs.hpp> 
+#include<librealsense2/rs.hpp>
 #include<opencv4/opencv2/core.hpp>
 #include<opencv4/opencv2/aruco.hpp>
 #include<opencv4/opencv2/imgcodecs.hpp>

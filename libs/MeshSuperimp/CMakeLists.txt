@@ -13,7 +13,6 @@ set(${LIBRARY_TARGET_NAME}_HDR
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(SuperimposeMesh REQUIRED)
-find_package(realsense2 REQUIRED)
 
 add_library(${LIBRARY_TARGET_NAME} ${${LIBRARY_TARGET_NAME}_SRC} ${${LIBRARY_TARGET_NAME}_HDR})
 add_library(${PROJECT_NAME}::${LIBRARY_TARGET_NAME} ALIAS ${LIBRARY_TARGET_NAME})
