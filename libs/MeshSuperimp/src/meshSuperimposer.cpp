@@ -22,6 +22,7 @@ MeshSuperimposer::MeshSuperimposer(std::vector<std::pair<std::string,std::string
 
         const char * cpath = paths[meshIndex].second.std::string::c_str();
         if(access(cpath, F_OK ) != 0){
+            std::cout << paths[meshIndex].second << std::endl;
             std::cout << "ERROR: Cannot find the mesh file" << std::endl;
         }else{
             meshesContainer_.emplace(paths[meshIndex].first,cpath);
