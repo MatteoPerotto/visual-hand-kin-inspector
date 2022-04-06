@@ -163,10 +163,11 @@ bool VisualInspector::configure(yarp::os::ResourceFinder& rf)
                 Eigen::Transform<double, 3, Eigen::Affine> boardFixedT;
                 boardFixedT = Eigen::Translation<double,3>(T);
                 boardFixedT.rotate(R);
-                ptrPoseDet_->addBoard(boardId,markerX,markerY,markerSize,markerSep,markerIds,boardFixedT);
+                ptrPoseDet_->addBoard(boardId,markerX,markerY,markerSize,markerSep,markerIds,boardFixedT.inverse());
             } 
         }
         ptrPoseDet_->printBoardInfo();
+        ptrPoseDet_->printBoards();
     }
     else
     {   
