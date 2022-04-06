@@ -123,8 +123,8 @@ void PoseDetector::printBoards()
 {  
     for(auto& b: boardPtr_)
     {
-        cv::Mat boardImage;
-        b.second->draw( cv::Size(600, 500), boardImage);
+        cv::Mat boardImage; 
+        b.second->draw( cv::Size(236,1087), boardImage);
         std::string name = "board"+std::to_string(b.first)+".png";
         cv::imwrite(name,boardImage);
     }  
