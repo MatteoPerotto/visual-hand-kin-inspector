@@ -6,7 +6,7 @@
 #include<realsenseYarp.h>
 #include<opencv4/opencv2/core.hpp>
 #include<opencv4/opencv2/highgui.hpp>
-#include <math.h> 
+#include<math.h> 
 
 bool VisualInspector::configure(yarp::os::ResourceFinder& rf) 
 {   
@@ -58,11 +58,11 @@ bool VisualInspector::configure(yarp::os::ResourceFinder& rf)
         return false;
     } 
 
-    if(rf.check("robotName") && rf.check("robotPart"))
+    if(rf.check("portName"))
     {
-        std::string robotName = rf.find("robotName").asString();
-        std::string robotPart = rf.find("robotPart").asString();
-        ptrEncRead_ = std::make_unique<EncoderReader>(robotName, robotPart, ptrMkObject_->dofList_);
+        std::string portName = rf.find("portName").asString();
+        ptrEncRead_ = std::make_unique<EncoderReader>(portName);
+        ptrEncRead_->instantiateFingers();
     }
     else
     {
@@ -212,7 +212,6 @@ bool VisualInspector::updateModule()
     /* Extract encoder readings */
     auto encoderSignal = ptrEncRead_->readEncoders();
 
-
     /* Update the position of the mesh in world RF */
     std::vector<Eigen::Transform<double, 3, Eigen::Affine>> meshTransform;
     meshTransform = ptrMkObject_->updateConfiguration(encoderSignal); 
@@ -221,6 +220,8 @@ bool VisualInspector::updateModule()
 
     Eigen::Array3d avgT;
     Eigen::Matrix3d avgR = newBoardsPose[1].second.rotation();
+    Eigen::Matrix3d m;
+    m = Eigen::AngleAxisd(M_PI, Eigen::Vector3d::UnitZ());
     int n=0;
 
     for(auto& T : markerIds_)
@@ -234,6 +235,7 @@ bool VisualInspector::updateModule()
 
     fixedT_ = Eigen::Translation<double,3>(avgT);
     fixedT_.rotate(avgR);
+    //fixedT_.rotate(m);
     
     for(int j=0; j<meshTransform.size(); j++)
     {
