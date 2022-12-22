@@ -6,17 +6,18 @@
 #include<yarp/os/Network.h>
 #include<yarp/os/BufferedPort.h>
 #include<yarp/sig/Image.h>
-#include <iCub/iKin/iKinFwd.h>
-#include <unordered_map>
+#include<iCub/iKin/iKinFwd.h>
+#include<unordered_map>
 
-class EncoderReader
+class EncoderReader 
 {
     public:
-    EncoderReader(std::string robotName, std::string partName, std::vector<std::string> dofList);
+    EncoderReader(std::string portName);
     ~EncoderReader();
-    Eigen::VectorXd readEncoders();
+    std::unordered_map<std::string, double>  readEncoders();
+    void instantiateFingers();
     std::unordered_map<std::string, iCub::iKin::iCubFinger> fingers_;
-    Eigen::VectorXd encoderReads_;
+    std::unordered_map<std::string, double> encoderReads_;
     
     private:
     yarp::dev::PolyDriver robotDriver_;
