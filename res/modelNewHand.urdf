@@ -1,0 +1,428 @@
+<robot name="left_lower_arm_mk4">
+  <link name="l_hand_palm_link">
+    <inertial>
+      <origin xyz="-0.005367464333000012 0.0032848363414000005 -0.060635199999999986" rpy="1.5707963267948961 -1.570796326794896 0"/>
+      <mass value="0.203273"/>
+      <inertia ixx="0.01" ixy="-2.74785e-06" ixz="4.95248e-06" iyy="0.01" iyz="-2.92175e-06" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.010450000000000015" rpy="1.5707963267948961 -1.570796326794896 0"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_palm_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.010450000000000015" rpy="1.5707963267948961 -1.570796326794896 0"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_palm_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_hand_thumb_mcarp_link">
+    <inertial>
+      <origin xyz="0.006378601072621106 0.0022387320650559383 -0.024261127337330133" rpy="1.5707965154455237 0.9948378273084044 -2.7469228454210013"/>
+      <mass value="0.0252289"/>
+      <inertia ixx="0.01" ixy="1.50281e-06" ixz="-1.70829e-07" iyy="0.01" iyz="-3.83912e-07" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.037710010479450516 -0.018956965741806983 -0.053300050335283816" rpy="1.5707965154455237 0.9948378273084044 -2.7469228454210013"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_mcarp_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="yellow">
+        <color rgba="1 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.037710010479450516 -0.018956965741806983 -0.053300050335283816" rpy="1.5707965154455237 0.9948378273084044 -2.7469228454210013"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_mcarp_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_thumb_add_joint" type="revolute">
+    <origin xyz="0.008184475666999994 -0.003487873658600001 -0.020130699999999998" rpy="0.2446965939114608 -0.5267991708409908 -0.4609627525727803"/>
+    <axis xyz="7.070317244615384e-08 -8.185344187806463e-08 -0.9999995046105813"/>
+    <parent link="l_hand_palm_link"/>
+    <child link="l_hand_thumb_mcarp_link"/>
+    <limit effort="50000" lower="0.0" upper="1.2217304763960306" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_thumb_prox_link">
+    <inertial>
+      <origin xyz="0.008614476116454703 0.0028222250799653384 -0.00022376103022266752" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <mass value="0.029711"/>
+      <inertia ixx="0.01" ixy="1.32092e-07" ixz="1.50017e-07" iyy="0.01" iyz="-5.05589e-07" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.031963727077622024 -0.0154897239044355 -0.055960456833021435" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_prox_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="pink">
+        <color rgba="1 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.031963727077622024 -0.0154897239044355 -0.055960456833021435" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_prox_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_thumb_rot_joint" type="revolute">
+    <origin xyz="0.020067183336136486 0.00391534771164586 -0.03023845289772768" rpy="-0.13484513528115596 0.6514098671459969 9.518187324658871e-07"/>
+    <axis xyz="1.00000054212774 -4.0198942929947634e-07 -2.548410194813666e-07"/>
+    <parent link="l_hand_thumb_mcarp_link"/>
+    <child link="l_hand_thumb_prox_link"/>
+    <limit effort="50000" lower="0.0" upper="1.2217304763960306" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_thumb_med_link">
+    <inertial>
+      <origin xyz="0.004503375463192072 0.0015622264567948345 0.00017971328612488568" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <mass value="0.00575496"/>
+      <inertia ixx="0.01" ixy="2.45431e-08" ixz="-1.67693e-09" iyy="0.01" iyz="-7.1794e-09" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.05276376111144416 -0.011989768509771757 -0.055960467125364885" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="cyan">
+        <color rgba="0 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.05276376111144416 -0.011989768509771757 -0.055960467125364885" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_thumb_prox_joint" type="revolute">
+    <origin xyz="0.020800034033822135 -0.0034999553946637434 0" rpy="0 0 0"/>
+    <axis xyz="-1.7172284441646646e-07 4.309561184856481e-07 0.9999994895007622"/>
+    <parent link="l_hand_thumb_prox_link"/>
+    <child link="l_hand_thumb_med_link"/>
+    <limit effort="50000" lower="0.0" upper="1.4311699866353502" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_thumb_dist_link">
+    <inertial>
+      <origin xyz="0.008469696815862834 0.002764248159745082 2.951590603861992e-05" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <mass value="0.0061558"/>
+      <inertia ixx="5.85345e-07" ixy="3.78501e-08" ixz="1.29332e-08" iyy="2.99023e-07" iyz="-1.2428e-07" izz="5.67684e-07"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.07276369420112876 -0.010489724691155854 -0.05596048636837316" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.07276369420112876 -0.010489724691155854 -0.05596048636837316" rpy="-2.5033211883150384 1.4372842642871335 -0.6156454664899981"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_thumb_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_thumb_dist_joint" type="revolute">
+    <origin xyz="0.019999933089684604 -0.0015000438186159037 0" rpy="0 0 0"/>
+    <axis xyz="-1.7172284441646646e-07 4.309561184856481e-07 0.9999994895007622"/>
+    <parent link="l_hand_thumb_med_link"/>
+    <child link="l_hand_thumb_dist_link"/>
+    <limit effort="50000" lower="0.0" upper="0.9424777960769379" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_index_prox_link">
+    <inertial>
+      <origin xyz="0.006455237771235564 0.0034998261438046368 -0.014826631933074194" rpy="1.5707963267966558 1.4835302385777358 -3.1415926535881247"/>
+      <mass value="0.0201842"/>
+      <inertia ixx="2.82853e-06" ixy="1.65865e-06" ixz="-1.83689e-07" iyy="3.28685e-06" iyz="3.62434e-07" izz="4.9134e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.02205311331167624 -0.004499994103671547 -0.01725249382063329" rpy="1.5707963267966558 1.4835302385777358 -3.1415926535881247"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_index_prox_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.02205311331167624 -0.004499994103671547 -0.01725249382063329" rpy="1.5707963267966558 1.4835302385777358 -3.1415926535881247"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_index_prox_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_index_add_joint" type="revolute">
+    <origin xyz="0.02246555566699998 -0.0014999536586000044 -0.06859109999999999" rpy="2.5330403725437464e-07 -0.0872664880531623 0"/>
+    <axis xyz="8.31720194974842e-14 1.0000000000000324 -1.4624135626812665e-13"/>
+    <parent link="l_hand_palm_link"/>
+    <child link="l_hand_index_prox_link"/>
+    <limit effort="50000" lower="0.0" upper="0.2617993877991494" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_index_med_link">
+    <inertial>
+      <origin xyz="-0.00013662943743125017 0.0006546624948926378 -0.009852584200951212" rpy="1.5707963267966558 1.4835302385777358 -3.1415926535881247"/>
+      <mass value="0.00749524"/>
+      <inertia ixx="0.01" ixy="7.9183e-08" ixz="-1.40693e-07" iyy="0.01" iyz="1.30683e-08" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.031245694889132 -0.004499996169619353 0.013461468655770109" rpy="1.5707963267966558 1.4835302385777358 -3.1415926535881247"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_index_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dblue">
+        <color rgba="0 0 0.8 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.031245694889132 -0.004499996169619353 0.013461468655770109" rpy="1.5707963267966558 1.4835302385777358 -3.1415926535881247"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_index_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_index_prox_joint" type="revolute">
+    <origin xyz="0.009192581577455762 0 -0.0307139624764034" rpy="0 0 0"/>
+    <axis xyz="-1.000000331896004 1.7068233830242454e-13 -3.0412639626396317e-07"/>
+    <parent link="l_hand_index_prox_link"/>
+    <child link="l_hand_index_med_link"/>
+    <limit effort="50000" lower="0.0" upper="1.5707963267948966" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_index_dist_link">
+    <inertial>
+      <origin xyz="3.916737684821897e-05 0.0030019092964975024 -0.01260136607967105" rpy="1.5707949034016007 1.4835302385781197 3.1415912356132822"/>
+      <mass value="0.00606597"/>
+      <inertia ixx="0.01" ixy="6.21997e-08" ixz="2.72849e-08" iyy="0.01" iyz="-2.81074e-09" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.031245695391731027 -0.003000003928259388 0.04346062385938897" rpy="1.5707949034016007 1.4835302385781197 3.1415912356132822"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_index_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dgreen">
+        <color rgba="0.1 0.8 0.1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.031245695391731027 -0.003000003928259388 0.04346062385938897" rpy="1.5707949034016007 1.4835302385781197 3.1415912356132822"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_index_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_index_dist_joint" type="revolute">
+    <origin xyz="0 -0.0014999976329485496 -0.029999155575803294" rpy="-1.2405652253309448e-07 0 0"/>
+    <axis xyz="-1.000000331896004 -2.621035910085923e-13 -3.041268677332257e-07"/>
+    <parent link="l_hand_index_med_link"/>
+    <child link="l_hand_index_dist_link"/>
+    <limit effort="50000" lower="0.0" upper="1.7278759594743862" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_ring_med_link">
+    <inertial>
+      <origin xyz="-3.75899336661524e-05 0.0005396483444193076 -0.010229027282046554" rpy="-1.540899723204581 1.4835290531105758 0.0037024603098541396"/>
+      <mass value="0.00777063"/>
+      <inertia ixx="0.01" ixy="-6.92022e-08" ixz="-1.23418e-07" iyy="0.01" iyz="-1.16697e-08" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.016348458703287 -0.004608273872702193 0.011668778394604534" rpy="-1.540899723204581 1.4835290531105758 0.0037024603098541396"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_ring_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.016348458703287 -0.004608273872702193 0.011668778394604534" rpy="-1.540899723204581 1.4835290531105758 0.0037024603098541396"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_ring_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_palm_ring_joint" type="revolute">
+    <origin xyz="-0.015417944333000018 -0.001849973658599996 -0.09790099999999997" rpy="-0.0003232439409293631 0.08726625626826806 0.026180187233486214"/>
+    <axis xyz="0.9999996399665808 -7.61860217517174e-08 2.0658404401058706e-07"/>
+    <parent link="l_hand_palm_link"/>
+    <child link="l_hand_ring_med_link"/>
+    <limit effort="50000" lower="0.0" upper="1.5707963267948966" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_ring_dist_link">
+    <inertial>
+      <origin xyz="7.656748384518228e-05 0.0028886569579153996 -0.011686514317134689" rpy="-1.5314893236032183 1.48352215890358 0.013076963789881992"/>
+      <mass value="0.00637985"/>
+      <inertia ixx="0.01" ixy="-7.95721e-08" ixz="1.77155e-08" iyy="0.01" iyz="5.64791e-10" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.01634848138984435 -0.0031424352353307114 0.041665858875330586" rpy="-1.5314893236032183 1.48352215890358 0.013076963789881992"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_ring_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01634848138984435 -0.0031424352353307114 0.041665858875330586" rpy="-1.5314893236032183 1.48352215890358 0.013076963789881992"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_ring_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_ring_dist_joint" type="revolute">
+    <origin xyz="0 -0.0015000169076773092 -0.02999964379598083" rpy="-0.0008202362553281613 0 0"/>
+    <axis xyz="-0.9999996399665683 1.601034571897808e-07 -2.1915318701363053e-07"/>
+    <parent link="l_hand_ring_med_link"/>
+    <child link="l_hand_ring_dist_link"/>
+    <limit effort="50000" lower="0.0" upper="1.7278759594743862" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_pinkie_med_link">
+    <inertial>
+      <origin xyz="1.2705493797605244e-05 0.0005942303691255993 -0.008060334363891863" rpy="-1.5401401068115452 1.483529118477972 0.004458773640250978"/>
+      <mass value="0.00639293"/>
+      <inertia ixx="0.01" ixy="-4.71943e-08" ixz="-9.88767e-08" iyy="0.01" iyz="-7.69062e-09" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.037348432523288705 -0.004607716821777626 0.007668503936913484" rpy="-1.5401401068115452 1.483529118477972 0.004458773640250978"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_pinkie_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.037348432523288705 -0.004607716821777626 0.007668503936913484" rpy="-1.5401401068115452 1.483529118477972 0.004458773640250978"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_pinkie_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_palm_pinkie_joint" type="revolute">
+    <origin xyz="-0.03598234433300001 -0.0023882636585999917 -0.09208599999999997" rpy="-0.00038941254710545356 0.08726592088979454 0.026180601370595392"/>
+    <axis xyz="-0.9999996399664774 4.886301178431973e-07 1.2895999168074956e-07"/>
+    <parent link="l_hand_palm_link"/>
+    <child link="l_hand_pinkie_med_link"/>
+    <limit effort="50000" lower="0.0" upper="1.064650843716541" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_pinkie_dist_link">
+    <inertial>
+      <origin xyz="2.4246522120355968e-05 0.0032424814572155933 -0.010548691910001934" rpy="-1.5327409503499088 1.4835236863330044 0.011829986688129044"/>
+      <mass value="0.00555696"/>
+      <inertia ixx="0.01" ixy="-4.36536e-08" ixz="1.74382e-08" iyy="0.01" iyz="1.28451e-09" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.03734849079965363 -0.0031287820153161677 0.0326662192200769" rpy="-1.5327409503499088 1.4835236863330044 0.011829986688129044"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_pinkie_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.03734849079965363 -0.0031287820153161677 0.0326662192200769" rpy="-1.5327409503499088 1.4835236863330044 0.011829986688129044"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_pinkie_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_pinkie_dist_joint" type="revolute">
+    <origin xyz="0 -0.0014999947293796155 -0.02499971961503379" rpy="-0.0006449258863165404 1.7958110772682731e-07 -2.146453412852552e-07"/>
+    <axis xyz="-0.9999996399665664 2.740174438325971e-07 -5.044434109436984e-08"/>
+    <parent link="l_hand_pinkie_med_link"/>
+    <child link="l_hand_pinkie_dist_link"/>
+    <limit effort="50000" lower="0.0" upper="1.6231562043547265" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_middle_med_link">
+    <inertial>
+      <origin xyz="-0.0001198838424441382 0.0006428202454191202 -0.009815000395452314" rpy="-1.5707963267949747 1.5707963267944114 0"/>
+      <mass value="0.00753378"/>
+      <inertia ixx="0.01" ixy="6.5013e-09" ixz="-1.41952e-07" iyy="0.01" iyz="4.64777e-10" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.007600004456150668 -0.004500008478064883 0.01530000614262407" rpy="-1.5707963267949747 1.5707963267944114 0"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_middle_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.007600004456150668 -0.004500008478064883 0.01530000614262407" rpy="-1.5707963267949747 1.5707963267944114 0"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_middle_med_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_palm_middle_joint" type="revolute">
+    <origin xyz="0.009600045666999976 -0.0014999236586000016 -0.10299999999999998" rpy="6.897465542284738e-07 -3.9983580024448073e-07 1.274747839478469e-07"/>
+    <axis xyz="-1.0000000000000882 -2.1605526319825099e-13 -1.995354371962231e-13"/>
+    <parent link="l_hand_palm_link"/>
+    <child link="l_hand_middle_med_link"/>
+    <limit effort="50000" lower="0.0" upper="1.5707963267948966" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <link name="l_hand_middle_dist_link">
+    <inertial>
+      <origin xyz="7.650569573380665e-05 0.0028886525398525873 -0.011685971962876879" rpy="0 1.5707859203149277 1.5707963114428185"/>
+      <mass value="0.00637985"/>
+      <inertia ixx="0.01" ixy="-6.86922e-09" ixz="1.46557e-08" iyy="0.01" iyz="-8.99961e-10" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.007600002269863322 -0.003000479199081448 0.04529997388604051" rpy="0 1.5707859203149277 1.5707963114428185"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_middle_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="yellow">
+        <color rgba="1 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.007600002269863322 -0.003000479199081448 0.04529997388604051" rpy="0 1.5707859203149277 1.5707963114428185"/>
+      <geometry>
+        <mesh filename="package://mk4/sim_l_hand_middle_dist_link_prt.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_middle_dist_joint" type="revolute">
+    <origin xyz="0 -0.001500000692397539 -0.02999999896538831" rpy="-1.0406479548850303e-05 0 0"/>
+    <axis xyz="-1.0000000000000884 -1.9440862165299721e-13 -1.1615490749971185e-13"/>
+    <parent link="l_hand_middle_med_link"/>
+    <child link="l_hand_middle_dist_link"/>
+    <limit effort="50000" lower="0.0" upper="1.7278759594743862" velocity="50000"/>
+    <dynamics damping="1.0"/>
+  </joint>
+  <gazebo>
+    <plugin name='controlboard_wrist' filename='libgazebo_yarp_controlboard.so'>
+      <yarpConfigurationFile>model://conf/gazebo_left_wrist/left_wrist.ini</yarpConfigurationFile>
+    </plugin>
+    <!--<plugin name='controlboard_hand' filename='libgazebo_yarp_controlboard.so'>
+      <yarpConfigurationFile>model://conf/gazebo_left_hand/left_hand_phys.ini</yarpConfigurationFile>
+    </plugin> -->
+    <plugin name="robotinterface" filename="libgazebo_yarp_robotinterface.so">
+      <yarpRobotInterfaceConfigurationFile>model://conf/left_lower_arm_mk4.xml</yarpRobotInterfaceConfigurationFile>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
+  </gazebo>
+</robot>
