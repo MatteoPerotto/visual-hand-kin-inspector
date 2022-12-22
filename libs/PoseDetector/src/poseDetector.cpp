@@ -124,7 +124,7 @@ void PoseDetector::printBoards()
     for(auto& b: boardPtr_)
     {
         cv::Mat boardImage; 
-        b.second->draw( cv::Size(236,1087), boardImage);
+        b.second->draw( cv::Size(236,1181), boardImage);
         std::string name = "board"+std::to_string(b.first)+".png";
         cv::imwrite(name,boardImage);
     }  
@@ -154,8 +154,6 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
     cv::eigen2cv(cameraIntrinsic_,cvCameraIntrinsic);
     cv::eigen2cv(distCoeff_,cvDistCoeff);
 
-    std::cout << "Inrinsic" << std::endl << cvCameraIntrinsic << std::endl;
-
     std::vector<int> foundMarkerIds;
     std::vector<std::vector<cv::Point2f>> markerCorners, rejectedCandidates;
     cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
@@ -165,7 +163,6 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
 
     for(auto&  b: boardPtr_)
     {   
-        std::cout << b.second << std::endl;
         Eigen::Transform<double,3,Eigen::Affine> homT;
         Eigen::Matrix3d rotEigen = Eigen::Matrix3d::Zero(3,3);
         Eigen::Vector3d traslEigen = Eigen::Vector3d::Zero(3,1);
@@ -189,7 +186,6 @@ std::unordered_map<int, std::pair<bool,Eigen::Transform<double,3,Eigen::Affine>>
             cv::aruco::drawAxis(currentFrame, cvCameraIntrinsic, cvDistCoeff, rvec, tvec, 2*markersSize_[b.first]);
         }
     }
-
     return outPoses_;
 }
 
