@@ -13,6 +13,7 @@
 // yarpmotorgui --robot icubSim
 
 // ./bin/VisualKinInspector --from ../config/config.ini 
+// yarprobotinterface --config /home/matteoperotto/Desktop/experimentalSetups/wristmk2_handmk3/new_forearm-no_wrist.xml
 
 
 int main(int argc, char** argv)
