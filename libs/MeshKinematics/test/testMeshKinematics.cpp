@@ -9,26 +9,28 @@ int main(int argc, char* argv[])
 {
   // The following will be the inputs to the class
   MeshKinematics mkObject(argv[1]);   // The path to the urdf model (till now is given as argv)
-  Eigen::VectorXd q(mkObject.dofs_);  // The value of the generalized coordinates
-  q[0] = 0;
-  q[1] = 0;
-  q[2] = 0;
+
+  std::unordered_map<std::string,double> coord;
+  for(int it=0; it<mkObject.dofs_; it++)
+  {
+    coord[mkObject.dofList_[it]] = 0.0 + it;
+  }
 
   for(int i=0; i<2; i++)
   {
     std::cout << "########### ITERATION " << i+1 << " ###########" << std::endl;
     std::vector<Eigen::Transform<double, 3, Eigen::Affine>> meshTransform;
-    meshTransform = mkObject.updateConfiguration(q);
+    meshTransform = mkObject.updateConfiguration(coord); 
     std::cout << meshTransform.size() << std::endl;
     for(int i=0; i<mkObject.nLinks_; i++){
       std::cout << meshTransform[i].matrix() << std::endl;
       std::cout << "\n" << std::endl;
     }
 
-    //q0 is x, 
-    q[0] = q[0];
-    q[1] = q[1];
-    q[2] = q[2]+3.14;
+    for(int it=0; it<mkObject.dofs_; it++)
+    {
+      coord[mkObject.dofList_[it]] = coord[mkObject.dofList_[it]]+it;
+    }
   }
   
 }

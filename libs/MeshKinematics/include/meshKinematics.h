@@ -12,6 +12,7 @@
 #include<Eigen/Dense>
 #include<iDynTree/KinDynComputations.h>
 #include<iostream>
+#include <unordered_map>
 
 class MeshKinematics
 {
@@ -19,7 +20,7 @@ class MeshKinematics
     MeshKinematics();
     MeshKinematics(const std::string& filePath);
     ~MeshKinematics();
-    std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updateConfiguration(const Eigen::VectorXd& eigenCoord);
+    std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updateConfiguration(std::unordered_map<std::string,double>& coord);
     std::size_t dofs_;
     std::size_t nLinks_;
     std::vector<std::pair<std::string,std::string>> meshPath_;

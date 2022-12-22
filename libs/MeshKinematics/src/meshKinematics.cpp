@@ -13,6 +13,7 @@
 #include<iDynTree/KinDynComputations.h>
 #include<iostream>
 #include<meshKinematics.h>
+#include <unordered_map>
 
 
 // Constructors
@@ -84,8 +85,14 @@ MeshKinematics::~MeshKinematics()
 }
 
 // Update method - it returns the transformations of all visual reference frames given the change in dof
-std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateConfiguration(const Eigen::VectorXd& eigenCoord)
+std::vector<Eigen::Transform<double, 3, Eigen::Affine>> MeshKinematics::updateConfiguration(std::unordered_map<std::string,double>& coord)
 {
+  Eigen::VectorXd eigenCoord = Eigen::VectorXd::Zero(coord.size());
+
+  for(int it=0; it<dofList_.size(); it++)
+  {
+    eigenCoord(it) = coord[dofList_[it]];
+  }
 
   std::vector<Eigen::Transform<double, 3, Eigen::Affine>> updatedPose;
   iDynTree::FrameIndex frameIndex;
