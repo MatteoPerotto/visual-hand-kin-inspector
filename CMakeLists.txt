@@ -19,14 +19,18 @@ find_package(ICUB REQUIRED)
 # List of CPP (source) library files.
 set(${TARGET_NAME}_SRC
         src/main.cpp
-        src/mk2EncoderReader.cpp
+        src/mk4EncoderReader.cpp
+        #src/encoderReader.cpp
+        #src/mk2EncoderReader.cpp
         src/realsenseYarp.cpp
         src/visualInspector.cpp
 )
 
 # List of HPP (header) library files.
 set(${TARGET_NAME}_HDR
-        src/mk2EncoderReader.h    
+        src/mk4EncoderReader.h   
+        #src/encoderReader.h   
+        #src/mk2EncoderReader.h
         src/realsenseYarp.h
         src/visualInspector.h    
 )
