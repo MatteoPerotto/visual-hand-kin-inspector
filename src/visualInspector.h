@@ -4,7 +4,7 @@
 #include<Eigen/Geometry>
 #include<meshKinematics.h>
 #include<meshSuperimposer.h>
-#include<mk2EncoderReader.h>
+#include<mk4EncoderReader.h>
 #include<opencv4/opencv2/core.hpp>
 #include<poseDetector.h>
 #include<yarp/os/RFModule.h> 
