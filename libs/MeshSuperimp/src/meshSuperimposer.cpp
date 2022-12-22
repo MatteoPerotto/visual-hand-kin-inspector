@@ -27,7 +27,6 @@ MeshSuperimposer::MeshSuperimposer(std::vector<std::pair<std::string,std::string
         }else{
             meshesContainer_.emplace(paths[meshIndex].first,cpath);
             idContainer_.push_back(paths[meshIndex].first);
-            std::cout << idContainer_[meshIndex] << std::endl;
         } 
     }
     
