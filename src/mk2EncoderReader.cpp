@@ -1,9 +1,7 @@
 #include<iostream>
 #include<mk2EncoderReader.h>
 #include<yarp/os/Bottle.h>
-
 #include<yarp/os/LogStream.h>
-
 #include<yarp/os/Property.h>
 #include<yarp/eigen/Eigen.h>
 #include<yarp/sig/Vector.h>
@@ -12,32 +10,20 @@
 #include <unordered_map>
 
 
-EncoderReader::EncoderReader(std::string robotName, std::string partName, std::vector<std::string> dofList)
+EncoderReader::EncoderReader(std::string portName)
 {   
-    // Instantiate fingers 
-    //fingers_["thumb"] = iCub::iKin::iCubFinger("left_thumb_b");
-    fingers_["thumb"] = iCub::iKin::iCubFinger("left_thumb");
-    fingers_["index"] = iCub::iKin::iCubFinger("left_index");
-    fingers_["middle"] = iCub::iKin::iCubFinger("left_middle");
-    fingers_["ring"] = iCub::iKin::iCubFinger("left_ring");
-    fingers_["little"] = iCub::iKin::iCubFinger("left_little");
-
     // Read encoders 
     yarp::os::Property robotDriverOpt;
     robotDriverOpt.put("device", "remote_controlboard");
     robotDriverOpt.put("local", "/test/client");
-    robotDriverOpt.put("remote", "/" + robotName + "/" + partName); 
+    robotDriverOpt.put("remote", portName);  
     
     if(robotDriver_.open(robotDriverOpt))
     {
         robotDriver_.view(enc_);
         enc_->getAxes(&jnts_);
         std::cout << "Found ENCODERS: " << jnts_ << std::endl;
-
     }
-
-    dofList_ = dofList;
-    encoderReads_ = Eigen::VectorXd::Zero(20);
 }
 
 EncoderReader::~EncoderReader()
@@ -45,8 +31,19 @@ EncoderReader::~EncoderReader()
     robotDriver_.close();
 }
 
-Eigen::VectorXd EncoderReader::readEncoders()
+void EncoderReader::instantiateFingers()
+{
+    // Instantiate fingers 
+    fingers_["thumb"] = iCub::iKin::iCubFinger("left_thumb");
+    fingers_["index"] = iCub::iKin::iCubFinger("left_index");
+    fingers_["middle"] = iCub::iKin::iCubFinger("left_middle");
+    fingers_["ring"] = iCub::iKin::iCubFinger("left_ring");
+    fingers_["little"] = iCub::iKin::iCubFinger("left_little");
+}
+
+std::unordered_map<std::string, double> EncoderReader::readEncoders()
 {   
+
     yarp::sig::Vector encoders(9);
     yarp::sig::Vector armEncoders(16);
     yarp::sig::Vector allchainJoints;
@@ -55,7 +52,7 @@ Eigen::VectorXd EncoderReader::readEncoders()
     enc_->getEncoders(armEncoders.data());
 
     // Select only hand encoders 
-    yarp::eigen::toEigen(encoders) = yarp::eigen::toEigen(armEncoders).segment<9>(7);//
+    yarp::eigen::toEigen(encoders) = yarp::eigen::toEigen(armEncoders).segment<9>(7);
 
     std::unordered_map<std::string,Eigen::VectorXd> fingerEncoders;
 
@@ -67,26 +64,26 @@ Eigen::VectorXd EncoderReader::readEncoders()
         fingerEncoders[finger.first] = chainJointsEigen;    
     }
 
-    encoderReads_[0] = fingerEncoders["little"][0];
-    encoderReads_[1] = fingerEncoders["thumb"][0];
-    encoderReads_[2] = 0;
-    encoderReads_[3] = fingerEncoders["ring"][0];
-    encoderReads_[4] = -fingerEncoders["index"][0];
-    encoderReads_[5] = fingerEncoders["index"][1];
-    encoderReads_[6] = fingerEncoders["index"][2];
-    encoderReads_[7] = fingerEncoders["index"][3];
-    encoderReads_[8] = fingerEncoders["ring"][1];
-    encoderReads_[9] = fingerEncoders["ring"][2];
-    encoderReads_[10] = fingerEncoders["ring"][3];
-    encoderReads_[11] = fingerEncoders["middle"][0];
-    encoderReads_[12] = fingerEncoders["middle"][1];
-    encoderReads_[13] = fingerEncoders["middle"][2];
-    encoderReads_[14] = fingerEncoders["thumb"][1];
-    encoderReads_[15] = fingerEncoders["thumb"][2];
-    encoderReads_[16] = fingerEncoders["thumb"][3];
-    encoderReads_[17] = fingerEncoders["little"][1];
-    encoderReads_[18] = fingerEncoders["little"][2];
-    encoderReads_[19] = fingerEncoders["little"][3];
+    encoderReads_["l_hand_little_0_joint"] = fingerEncoders["little"][0];
+    encoderReads_["l_hand_thumb_0_joint"] = fingerEncoders["thumb"][0];
+    encoderReads_["l_hand_middle_0_joint"] = 0;
+    encoderReads_["l_hand_ring_0_joint"] = fingerEncoders["ring"][0];
+    encoderReads_["l_hand_index_0_joint"] = -fingerEncoders["index"][0];
+    encoderReads_["l_hand_index_1_joint"] = fingerEncoders["index"][1];
+    encoderReads_["l_hand_index_2_joint"] = fingerEncoders["index"][2];
+    encoderReads_["l_hand_index_3_joint"] = fingerEncoders["index"][3];
+    encoderReads_["l_hand_ring_1_joint"] = fingerEncoders["ring"][1];
+    encoderReads_["l_hand_ring_2_joint"] = fingerEncoders["ring"][2];
+    encoderReads_["l_hand_ring_3_joint"] = fingerEncoders["ring"][3];
+    encoderReads_["l_hand_middle_1_joint"] = fingerEncoders["middle"][0];
+    encoderReads_["l_hand_middle_2_joint"] = fingerEncoders["middle"][1];
+    encoderReads_["l_hand_middle_3_joint"] = fingerEncoders["middle"][2];
+    encoderReads_["l_hand_thumb_1_joint"] = fingerEncoders["thumb"][1];
+    encoderReads_["l_hand_thumb_2_joint"] = fingerEncoders["thumb"][2];
+    encoderReads_["l_hand_thumb_3_joint"] = fingerEncoders["thumb"][3];
+    encoderReads_["l_hand_little_1_joint"] = fingerEncoders["little"][1];
+    encoderReads_["l_hand_little_2_joint"] = fingerEncoders["little"][2];
+    encoderReads_["l_hand_little_3_joint"] = fingerEncoders["little"][3];
 
     return encoderReads_;
 }   
